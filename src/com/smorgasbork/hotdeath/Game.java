@@ -1011,6 +1011,8 @@ public class Game extends Thread {
 				m_gameOver = true;
 			}
 		}
+		
+		m_snapshot = this.toJSON();
 
 		if (m_gameOver) 
 		{

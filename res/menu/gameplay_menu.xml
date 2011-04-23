@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:alphabeticShortcut="@string/menu_item_draw_shortcut" android:title="@string/menu_item_draw_title" android:id="@+id/menu_item_draw"></item>
+    <item android:alphabeticShortcut="@string/menu_item_pass_shortcut" android:title="@string/menu_item_pass_title" android:id="@+id/menu_item_pass"></item>
+    <item android:alphabeticShortcut="@string/menu_item_card_info_shortcut" android:title="@string/menu_item_card_info_title" android:id="@+id/menu_item_card_info"></item>
+</menu>

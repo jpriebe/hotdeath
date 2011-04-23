@@ -1,0 +1,58 @@
+BUGS
+
+- Tap too early and cause a crash
+
+- got all bastard cards didn't seem to indicate to the user that the game was over;
+  certainly didn't bring back other players' hands
+
+
+- artwork:
+
+  - scan additional card backgrounds for more realism
+  
+  - redesign backgrounds completely to be less like UNO?
+  
+- game play loop
+      
+   - messages to clarify penalties like "South draws, takes penalty"
+     
+   - if user has to draw a huge number like 69, and the draw pile and discard piles are empty, 
+     you get a ton of "no cards in draw pile or discard pile"
+     
+- drawing
+
+   - resolution independence
+      
+   - landscape support?
+  
+
+
+- code maintenance
+  - unused code
+  - put code into SVN
+  
+  
+ Would be nice:
+ 
+  - if a matching card is played, you get a toast saying "North threw another green 5"; otherwise, it's a bit hard to see what happened
+ 
+   - better AI for the computer players; have them save some power cards
+
+
+   
+----------------------------------------------------------------------
+Done:
+
+- timing problems with Toasts - reuse one Toast object so that when you show it, it immediately
+  clears the last message instead of queueing up a list of toasts!
+
+- don't allow cancelling of dialog prompts (setCancelable(false))
+
+- ignore the screen orientation (via changes made to manifest)
+
+- pause/unpause game thread -- use a boolean in the game class; synchronize
+  all access to it
+  
+- state saving: Implement toJSON() methods in all game state objects; create JSONObject of game and its children; store string in Preferences;
+  implement an alternate constructor for each game state object that takes a JSONObject as a parameter;
+  when continuing, load the JSONObject from preferences; instantiate all objects using the information in this object.

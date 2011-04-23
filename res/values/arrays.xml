@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<array name="colors">
+<item>@string/cardcolor_red</item>
+<item>@string/cardcolor_green</item>
+<item>@string/cardcolor_blue</item>
+<item>@string/cardcolor_yellow</item>
+</array>
+<string-array name="deal_values">
+<item>5</item>
+<item>6</item>
+<item>7</item>
+<item>8</item>
+<item>9</item>
+<item>10</item>
+<item>11</item>
+<item>12</item>
+<item>13</item>
+<item>14</item>
+<item>15</item>
+</string-array>
+<string-array name="cheat_levels">
+<item>@string/cheat_level_0</item>
+<item>@string/cheat_level_1</item>
+<item>@string/cheat_level_2</item>
+<item>@string/cheat_level_3</item>
+</string-array>
+<string-array name="cheat_level_values">
+<item>0</item>
+<item>1</item>
+<item>2</item>
+<item>3</item>
+</string-array>
+<string-array name="skill_levels">
+<item>@string/skill_level_0</item>
+<item>@string/skill_level_1</item>
+<item>@string/skill_level_2</item>
+</string-array>
+<string-array name="skill_level_values">
+<item>0</item>
+<item>1</item>
+<item>2</item>
+</string-array>
+<string-array name="aggression_levels">
+<item>@string/aggression_level_n6</item>
+<item>@string/aggression_level_n3</item>
+<item>@string/aggression_level_0</item>
+<item>@string/aggression_level_3</item>
+<item>@string/aggression_level_6</item>
+</string-array>
+<string-array name="aggression_level_values">
+<item>-6</item>
+<item>-3</item>
+<item>0</item>
+<item>3</item>
+<item>6</item>
+</string-array>
+<string-array name="game_speeds">
+<item>@string/game_speed_0</item>
+<item>@string/game_speed_1</item>
+<item>@string/game_speed_2</item>
+<item>@string/game_speed_3</item>
+<item>@string/game_speed_4</item>
+</string-array>
+<string-array name="game_speed_values">
+<item>0</item>
+<item>1</item>
+<item>2</item>
+<item>3</item>
+<item>4</item>
+</string-array>
+</resources>

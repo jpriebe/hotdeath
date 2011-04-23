@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="main_background">#ff000099</color>
+    <color name="table_background">#ff009900</color>
+    <color name="table_text">#ffcccc00</color>
+    <color name="score_text">#ffffff00</color>
+    <color name="score_text_shadow">#ff000000</color>
+    <color name="card_badge_text">#ffffffff</color>
+</resources>

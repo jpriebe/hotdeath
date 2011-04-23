@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="30dip"
+    android:paddingRight="30dip"
+    android:paddingBottom="30dip"
+    android:paddingTop="80dip"
+    android:background="@drawable/splash"
+    android:orientation="horizontal"
+    >
+    <LinearLayout 
+    	android:id="@+id/linearLayout1"
+    	android:orientation="vertical"
+	    android:layout_height="wrap_content"
+    	android:layout_width="fill_parent"
+    	android:layout_gravity="center">
+	    <ImageButton android:src="@drawable/sel_btn_continue" android:id="@+id/btn_continue" 
+	    	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	    	android:scaleType="center" 
+	    	android:background="@null"></ImageButton>
+	    <ImageButton android:src="@drawable/sel_btn_new_game" android:id="@+id/btn_new_game" 
+	    	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	    	android:scaleType="center" 
+	    	android:background="@null"></ImageButton>
+	    <ImageButton android:src="@drawable/sel_btn_settings" android:id="@+id/btn_settings" 
+	    	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	    	android:scaleType="center" 
+	    	android:background="@null"></ImageButton>
+	    <ImageButton android:src="@drawable/sel_btn_help" android:id="@+id/btn_help" 
+	    	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	    	android:scaleType="center" 
+	    	android:background="@null"></ImageButton>
+	    <ImageButton android:src="@drawable/sel_btn_about" android:id="@+id/btn_about" 
+	    	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	    	android:scaleType="center" 
+	    	android:background="@null"></ImageButton>
+	    <ImageButton android:src="@drawable/sel_btn_exit" android:id="@+id/btn_exit" 
+	    	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	    	android:scaleType="center" 
+	    	android:background="@null"></ImageButton>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+     <ListPreference
+           android:key="game_speed"
+           android:title="@string/game_speed_title"
+           android:summary="@string/game_speed_summary"
+           android:defaultValue="1"
+           android:entries="@array/game_speeds"
+           android:entryValues="@array/game_speed_values" />   
+	<CheckBoxPreference
+		android:key="standard_rules"
+		android:title="@string/standard_rules_title"
+		android:summary="@string/standard_rules_summary"
+		android:defaultValue="false" />
+	<CheckBoxPreference
+		android:key="two_decks"
+		android:title="@string/two_decks_title"
+		android:summary="@string/two_decks_summary"
+		android:defaultValue="false" />
+	<CheckBoxPreference
+		android:key="computer_4th"
+		android:title="@string/computer_4th_title"
+		android:summary="@string/computer_4th_summary"
+		android:defaultValue="false" />
+	<CheckBoxPreference
+		android:key="face_up"
+		android:title="@string/face_up_title"
+		android:summary="@string/face_up_summary"
+		android:defaultValue="false" />
+     <ListPreference
+           android:key="cheat_level"
+           android:title="@string/cheat_level_title"
+           android:summary="@string/cheat_level_summary"
+           android:defaultValue="0"
+           android:entries="@array/cheat_levels"
+           android:entryValues="@array/cheat_level_values" /> 
+    <EditTextPreference
+            android:key="cheat_code"
+            android:title="@string/cheat_code_title"
+            android:summary="@string/cheat_code_summary"
+            android:defaultValue="" />
+     <PreferenceScreen android:title="@string/players">
+		<PreferenceCategory android:title="@string/player1">
+	     <ListPreference
+           android:key="p1_skill"
+           android:title="@string/skill_title"
+           android:summary="@string/skill_summary"
+           android:defaultValue="1"
+           android:entries="@array/skill_levels"
+           android:entryValues="@array/skill_level_values" /> 
+	     <ListPreference
+           android:key="p1_aggression"
+           android:title="@string/aggression_title"
+           android:summary="@string/aggression_summary"
+           android:defaultValue="0"
+           android:entries="@array/aggression_levels"
+           android:entryValues="@array/aggression_level_values" /> 
+          </PreferenceCategory>
+		<PreferenceCategory android:title="@string/player2">
+	     <ListPreference
+           android:key="p2_skill"
+           android:title="@string/skill_title"
+           android:summary="@string/skill_summary"
+           android:defaultValue="1"
+           android:entries="@array/skill_levels"
+           android:entryValues="@array/skill_level_values" /> 
+	     <ListPreference
+           android:key="p2_aggression"
+           android:title="@string/aggression_title"
+           android:summary="@string/aggression_summary"
+           android:defaultValue="0"
+           android:entries="@array/aggression_levels"
+           android:entryValues="@array/aggression_level_values" /> 
+          </PreferenceCategory>
+       <PreferenceCategory android:title="@string/player3">
+	     <ListPreference
+           android:key="p3_skill"
+           android:title="@string/skill_title"
+           android:summary="@string/skill_summary"
+           android:defaultValue="1"
+           android:entries="@array/skill_levels"
+           android:entryValues="@array/skill_level_values" /> 
+	     <ListPreference
+           android:key="p3_aggression"
+           android:title="@string/aggression_title"
+           android:summary="@string/aggression_summary"
+           android:defaultValue="0"
+           android:entries="@array/aggression_levels"
+           android:entryValues="@array/aggression_level_values" /> 
+          </PreferenceCategory>
+	</PreferenceScreen>
+
+</PreferenceScreen>

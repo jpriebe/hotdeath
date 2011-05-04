@@ -135,6 +135,19 @@ public class ComputerPlayer extends Player
 
 		if (bestcard == null)
 		{
+			// sophisticated players can hold onto expensive wild cards until later
+			// in the game.
+			int opponent_card_count = this.getMinCardsRemaining();
+			int wild_count = 0;
+			for (int i = 0; i < m_hand.getNumCards(); i++) 
+			{
+				Card tc = m_hand.getCard(i);
+				if (tc.getColor() == Card.COLOR_WILD)
+				{
+					wild_count++;
+				}
+			}
+			
 			for (int i = 0; i < m_hand.getNumCards(); i++) 
 			{
 				Card tc = m_hand.getCard(i);
@@ -150,7 +163,36 @@ public class ComputerPlayer extends Player
 					
 					// otherwise, try to find the one with the highest point value
 					// so we can toss it out of our hand
-					int testval = (this.m_skill > 1) ? tc.getCurrentValue() : tc.getPointValue();
+					
+					// TODO: improve this AI
+					//   - maintain color balance
+					//   - if total points in hand are > 69, hang onto the 69 card
+					//   - throw the mystery draw on numbered cards
+					//   - don't throw MAD when point count in hand is too high (unless player count < 4)
+
+					int testval = 0;
+					
+					if (this.m_skill >= 1)
+					{
+						// Strong and Expert
+						if (tc.getColor() == Card.COLOR_WILD)
+						{
+							if (wild_count < opponent_card_count - 1)
+							{
+								testval = 0;
+							}
+						}
+						else
+						{
+							testval = tc.getCurrentValue();
+						}
+					}
+					else
+					{
+						// even weak players can do this
+						testval = tc.getCurrentValue();
+					}
+					
 					if (testval >= maxpointval) 
 					{
 						maxpointval = testval;
@@ -171,6 +213,35 @@ public class ComputerPlayer extends Player
 			this.m_wantsToDraw = true;
 		}
 
+	}
+	
+	
+	public int getMinCardsRemaining()
+	{
+		int min_cards = 1000000;
+		
+		for (int i = 0; i < 4; i++)
+		{
+			Player p = m_game.getPlayer(i);
+			
+			if (p == this)
+			{
+				continue;
+			}
+			
+			if (p.getActive() == false)
+			{
+				continue;
+			}
+			
+			int num_cards = p.getHand().getNumCards();
+			if (num_cards < min_cards)
+			{
+				min_cards = num_cards;
+			}
+		}
+		
+		return min_cards;
 	}
 
 

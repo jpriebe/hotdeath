@@ -41,7 +41,8 @@ public class GameTable extends View
 	private Point[] m_ptPlayerIndicator;
 	private Point[] m_ptCardBadge;
 	private Point[] m_ptScoreText;
-	
+	private Point m_ptDirColor;
+	private Point m_ptWinningMessage;	
 	private Point m_ptMessages;
 	
 	private Rect[] m_handBoundingRect;
@@ -92,10 +93,9 @@ public class GameTable extends View
 	private Bitmap m_bmpDirColorCW, m_bmpDirColorCWRed, m_bmpDirColorCWGreen, m_bmpDirColorCWBlue, m_bmpDirColorCWYellow;
 	private Bitmap m_bmpEmoticonAggressor, m_bmpEmoticonVictim;
 	private Bitmap[][] m_bmpPlayerIndicator;
+	private Bitmap[] m_bmpWinningMessage;
 	private Bitmap m_bmpCardBadge;
-	
-	private Point m_ptDirColor;
-	
+		
 	private Paint m_paintTable;
 	private Paint m_paintTableText;
 	private Paint m_paintScoreText;
@@ -208,6 +208,7 @@ public class GameTable extends View
 		m_handBoundingRect = new Rect[4];
 		
 		m_bmpPlayerIndicator = new Bitmap[5][4];
+		m_bmpWinningMessage = new Bitmap[4];
 		
 		initCards();
 	}
@@ -242,6 +243,8 @@ public class GameTable extends View
 		m_ptPlayerIndicator[Game.SEAT_EAST - 1] = new Point (m_ptDirColor.x + m_bmpDirColorCCW.getWidth(), m_ptDirColor.y + m_bmpDirColorCCW.getHeight() / 2 -  m_bmpPlayerIndicator[0][0].getHeight() / 2);
 		m_ptPlayerIndicator[Game.SEAT_SOUTH - 1] = new Point (w / 2 - m_bmpPlayerIndicator[0][0].getWidth() / 2, m_ptDirColor.y + m_bmpDirColorCCW.getHeight());
 		m_ptPlayerIndicator[Game.SEAT_WEST - 1] = new Point (m_ptDirColor.x - m_bmpPlayerIndicator[0][0].getWidth(), m_ptDirColor.y + m_bmpDirColorCCW.getHeight() / 2 -  m_bmpPlayerIndicator[0][0].getHeight() / 2);
+		
+		m_ptWinningMessage = new Point (m_ptSeat[Game.SEAT_SOUTH - 1].x - m_bmpWinningMessage[0].getWidth() / 2, m_ptSeat[Game.SEAT_SOUTH - 1].y - m_bmpWinningMessage[0].getHeight() * 5 / 4);
 		
 		m_ptEmoticon[Game.SEAT_NORTH - 1] = new Point (m_ptSeat[Game.SEAT_NORTH - 1].x - m_emoticonWidth / 2, m_ptSeat[Game.SEAT_NORTH - 1].y + m_cardHeight * 11 / 10);
 		m_ptEmoticon[Game.SEAT_EAST - 1] = new Point (m_ptSeat[Game.SEAT_EAST - 1].x - m_emoticonWidth - m_cardWidth / 10, m_ptSeat[Game.SEAT_EAST - 1].y - m_emoticonHeight / 2);
@@ -838,6 +841,15 @@ public class GameTable extends View
 			m_drawMatrix.setTranslate(pt.x, pt.y);
 			
 			canvas.drawBitmap(m_bmpPlayerIndicator[curr_color - 1][p.getSeat() - 1], m_drawMatrix, null);
+		}
+		
+		if (m_game.getWinner() != 0)
+		{
+			m_drawMatrix.reset();
+			m_drawMatrix.setScale(1, 1);
+			m_drawMatrix.setTranslate(m_ptWinningMessage.x, m_ptWinningMessage.y);
+
+			canvas.drawBitmap(m_bmpWinningMessage[m_game.getWinner() - 1], m_drawMatrix, null);			
 		}
 		
 		drawPenalty(canvas);		
@@ -1472,6 +1484,12 @@ public class GameTable extends View
 		m_bmpPlayerIndicator[Card.COLOR_BLUE - 1][Game.SEAT_EAST - 1] = BitmapFactory.decodeResource(res, R.drawable.player_blue_east, opt);
 		m_bmpPlayerIndicator[Card.COLOR_YELLOW - 1][Game.SEAT_EAST - 1] = BitmapFactory.decodeResource(res, R.drawable.player_yellow_east, opt);
 		m_bmpPlayerIndicator[Card.COLOR_WILD - 1][Game.SEAT_EAST - 1] = BitmapFactory.decodeResource(res, R.drawable.player_east, opt);
+		
+		m_bmpWinningMessage[Game.SEAT_SOUTH - 1] = BitmapFactory.decodeResource(res, R.drawable.winner_south, opt);
+		m_bmpWinningMessage[Game.SEAT_WEST - 1] = BitmapFactory.decodeResource(res, R.drawable.winner_west, opt);
+		m_bmpWinningMessage[Game.SEAT_NORTH - 1] = BitmapFactory.decodeResource(res, R.drawable.winner_north, opt);
+		m_bmpWinningMessage[Game.SEAT_EAST - 1] = BitmapFactory.decodeResource(res, R.drawable.winner_east, opt);
+		
 
 		m_bmpCardBadge = BitmapFactory.decodeResource(res, R.drawable.card_badge, opt);
 		

@@ -144,6 +144,34 @@ public class HumanPlayer extends Player
 
 	public void chooseVictim()
 	{
+		// if there's only one other active player, it is silly to
+		// prompt the user for the victim..
+		int activeplayercount = 0;
+		int onlyactiveplayer = 0;
+		if (m_game.getPlayer(Game.SEAT_WEST - 1).getActive())
+		{
+			activeplayercount++;
+			onlyactiveplayer = Game.SEAT_WEST;
+		}
+		if (m_game.getPlayer(Game.SEAT_NORTH - 1).getActive())
+		{
+			activeplayercount++;
+			onlyactiveplayer = Game.SEAT_NORTH;
+		}
+		if (m_game.getPlayer(Game.SEAT_EAST - 1).getActive())
+		{
+			activeplayercount++;
+			onlyactiveplayer = Game.SEAT_EAST;
+		}
+		
+		if (activeplayercount == 1)
+		{
+			m_victimDecision = true;
+			m_chosenVictim = onlyactiveplayer;
+			return;
+		}
+		
+		// ok -- we've got more than one, so we prompt the user...
 		m_game.promptForVictim();
 		
 		m_victimDecision = false;

@@ -1,2 +1,10 @@
 Version 0.9                 2011-04-23
 Initial Release
+
+
+Version 0.9.1				2011-05-02
+ - redraw table after player passes (so you can see the next player "thinking")
+ - tap to dismiss card help dialog
+ - graphical game winner messages
+ - don't prompt user for victim if only one other active player
+ - small AI change for strong and expert players: hold onto wild cards until later in the game

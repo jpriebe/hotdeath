@@ -123,8 +123,9 @@ public class GameActivity extends Activity
 		switch (id) 
 		{
 			case DIALOG_CARD_HELP:
-				dlg = new Dialog(this);
+				dlg = new TapDismissableDialog(this);
 				dlg.setContentView(R.layout.dlg_card_help);
+				
 				break;
 				
 			case DIALOG_CARD_CATALOG:

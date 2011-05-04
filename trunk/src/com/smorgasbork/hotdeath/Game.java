@@ -20,6 +20,7 @@ public class Game extends Thread {
 	private boolean m_roundComplete = true;
 	private boolean m_waitingToStartRound = false;
 	private boolean m_gameOver = false;
+	private int m_winner = 0;
 	
 	private GameTable	m_gt;
 	private GameOptions m_go;
@@ -52,6 +53,11 @@ public class Game extends Thread {
 	
 	private JSONObject m_snapshot = null;
 
+	public int getWinner ()
+	{
+		return m_winner;
+	}
+	
 	public void setGameTable (GameTable gt)
 	{
 		m_gt = gt;
@@ -358,6 +364,7 @@ public class Game extends Thread {
 	public void resetGame()
 	{
 		m_gameOver = false;
+		m_winner = 0;
 		
 		for (int i = 0; i < 4; i++) 
 		{
@@ -788,6 +795,7 @@ public class Game extends Thread {
 				}
 				
 				m_currPlayer = nextPlayer();
+				redrawTable ();
 			}
 		}
 
@@ -822,9 +830,9 @@ public class Game extends Thread {
 					{
 						m_currPlayer = nextPlayer();
 					}
-					redrawTable ();
 				}
 			}
+			redrawTable ();
 		}
 
 		for (int i = 0; i < 4; i++) 
@@ -1016,8 +1024,8 @@ public class Game extends Thread {
 
 		if (m_gameOver) 
 		{
-			msg = String.format (getString(R.string.msg_declare_game_winner), seatToString(m_players[minPlayer].getSeat()));
-			promptUser (msg);
+			m_winner = m_players[minPlayer].getSeat();
+			redrawTable();
 		}
 
 		else 

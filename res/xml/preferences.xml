@@ -9,11 +9,6 @@
            android:entries="@array/game_speeds"
            android:entryValues="@array/game_speed_values" />   
 	<CheckBoxPreference
-		android:key="standard_rules"
-		android:title="@string/standard_rules_title"
-		android:summary="@string/standard_rules_summary"
-		android:defaultValue="false" />
-	<CheckBoxPreference
 		android:key="two_decks"
 		android:title="@string/two_decks_title"
 		android:summary="@string/two_decks_summary"

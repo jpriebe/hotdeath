@@ -245,6 +245,11 @@ public class Hand {
 		return this.calculateValue(false);
 	}
 	
+	public int calculateValue(boolean isfinal)
+	{
+		return this.calculateValue(isfinal, null);
+	}
+	
 	/*
 	This routine was overhauled for version 1.01.  It now has all sorts of
 	special card knowledge, which I had tried to avoid.  The upshot is that
@@ -255,7 +260,7 @@ public class Hand {
 	CheckForDefender(), and HandleSpecialCards() routines in Game.cpp.
 
 	*/
-	public int calculateValue(boolean isfinal)
+	public int calculateValue(boolean isfinal, Card withoutCard)
 	{
 		int highest = 0;
 		int highestNum = 0;
@@ -284,6 +289,11 @@ public class Hand {
 		for (i = 0; i < m_numCards; i++) 
 		{
 			Card c = m_cards[i];
+			if (c == withoutCard)
+			{
+				continue;
+			}
+			
 			if (c.getID() == Card.ID_BLUE_0_FUCKYOU) 
 			{
 				cFuckYou = c;
@@ -331,6 +341,12 @@ public class Hand {
 		for (i = 0; i < m_numCards; i++) 
 		{
 			Card c = m_cards[i];
+			
+			if (c == withoutCard)
+			{
+				continue;
+			}
+			
 			int id = c.getID();
 			// if we're getting the 1000 point penalty, we don't need to
 			// look at these three cards again

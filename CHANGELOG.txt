@@ -8,3 +8,27 @@ Version 0.9.1				2011-05-02
  - graphical game winner messages
  - don't prompt user for victim if only one other active player
  - small AI change for strong and expert players: hold onto wild cards until later in the game
+ 
+ Version 0.9.2
+ - allow rotation of display
+ - allow for installation on SD card for Froyo and up
+ - center of the table will look a little different in smallish landscape displays
+   like a phone in landscape (put the current player/color/direction indicator to the
+   right of the discard pile instead of beneath it)
+ - removed "standard rules" to avoid copyright issues
+ - card graphics revamped to avoid copyright issues
+ - hand sorting: when in face up mode, sort all cards together (cards still are flagged
+   as face up or face down even in this mode, and the system was sorting them separately)
+ - AI improvements:
+  - added color balance awareness; the more aggressive the player, the longer
+    he is willing to try to preserve a nice even color balance in his hand
+  - smarter play of the MAD card -- don't dump it if you're holding a ton of points
+  - smarter play of the 69 card -- sometimes the 69 card keeps your score much
+    lower (if you have hundreds of other points in your hand, it's a good card
+    to keep)
+  - smarter play of the Mystery Draw -- try to throw it only on numbered cards,
+    with higher preference toward higher numbers, and special consideration of
+    the 69 card
+ - bugfix: at the end of a round, hit "Back", "Continue", "Back" -- crash
+ - bugfix: if computer player went out on a Wild card, he wouldn't pick a color,
+   and bad things would happen...

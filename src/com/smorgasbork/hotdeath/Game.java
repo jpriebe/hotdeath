@@ -160,6 +160,8 @@ public class Game extends Thread {
 		{
 			o = gamestate.getJSONObject("state");
 			
+			m_snapshot = gamestate;
+			
 			m_deck = new CardDeck(gamestate.getJSONObject("deck"));
 			m_drawPile = new CardPile(gamestate.getJSONObject("drawPile"), m_deck);
 			m_discardPile = new CardPile(gamestate.getJSONObject("discardPile"), m_deck);
@@ -1130,25 +1132,41 @@ public class Game extends Thread {
 	{
 		Card[] cards = new Card[MAX_NUM_CARDS];
 		int i;
-
-		// sort according to deck order, but do faceup cards first
+		
 		int p = 0;
 		Card[] cd = m_deck.getCards();
-		for (i = 0; i < m_deck.getNumCards(); i++) 
+
+		if (m_go.getFaceUp())
 		{
-			Card c = cd[i];
-			if (c.getHand() == h && c.getFaceUp()) 
+			for (i = 0; i < m_deck.getNumCards(); i++) 
 			{
-				cards[p++] = c;
-			}
+				Card c = cd[i];
+				if (c.getHand() == h) 
+				{
+					cards[p++] = c;
+				}
+			}			
 		}
-		
-		for (i = 0; i < m_deck.getNumCards(); i++) 
+
+		else
 		{
-			Card c = cd[i];
-			if (c.getHand() == h && !(c.getFaceUp())) 
+			// sort according to deck order, but do faceup cards first
+			for (i = 0; i < m_deck.getNumCards(); i++) 
 			{
-				cards[p++] = c;
+				Card c = cd[i];
+				if (c.getHand() == h && c.getFaceUp()) 
+				{
+					cards[p++] = c;
+				}
+			}
+			
+			for (i = 0; i < m_deck.getNumCards(); i++) 
+			{
+				Card c = cd[i];
+				if (c.getHand() == h && !(c.getFaceUp())) 
+				{
+					cards[p++] = c;
+				}
 			}
 		}
 

@@ -2,14 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.smorgasbork.hotdeath"
       android:versionCode="1"
-      android:versionName="1.0">
+      android:versionName="0.9.2"
+      android:installLocation="auto">
     <uses-sdk android:minSdkVersion="7" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name="com.smorgasbork.hotdeath.Main"
                   android:label="@string/app_name"
-                  android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+                  android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -17,10 +18,10 @@
         </activity>
         <activity android:name="GameActivity"
                   android:label="@string/app_name"
-                  android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+                  android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         <activity android:name=".Prefs"
-                  android:label="@string/settings_title" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+                  android:label="@string/settings_title">
         </activity>
     </application>
 </manifest>

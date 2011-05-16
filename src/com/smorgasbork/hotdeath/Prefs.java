@@ -16,8 +16,6 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
 {
 	private static final String OPT_GAME_SPEED = "game_speed";
 	private static final String OPT_GAME_SPEED_DEF = "1";
-	private static final String OPT_STANDARD_RULES = "standard_rules";
-	private static final boolean OPT_STANDARD_RULES_DEF = false;
 	private static final String OPT_TWO_DECKS = "two_decks";
 	private static final boolean OPT_TWO_DECKS_DEF = false;
 	private static final String OPT_COMPUTER_4TH = "computer_4th";
@@ -125,12 +123,6 @@ public class Prefs extends PreferenceActivity implements OnSharedPreferenceChang
 		String s = PreferenceManager.getDefaultSharedPreferences(context)
 			.getString (OPT_GAME_SPEED, OPT_GAME_SPEED_DEF);
 		return Integer.parseInt (s);
-	}
-	
-	public static boolean getStandardRules (Context context)
-	{
-		return PreferenceManager.getDefaultSharedPreferences(context)
-					.getBoolean (OPT_STANDARD_RULES, OPT_STANDARD_RULES_DEF);
 	}
 	
 	public static boolean getTwoDecks (Context context)

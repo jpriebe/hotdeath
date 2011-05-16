@@ -80,7 +80,13 @@ public class GameOptions {
 
 	public boolean getStandardRules() 
     {
-		return Prefs.getStandardRules(m_ga);
+		String s = Prefs.getCheatCode (m_ga);
+		if (s.contains("standardrules"))
+		{
+			return true;
+		}
+		
+		return false;
     }
 
 	public boolean getOneDeck() 

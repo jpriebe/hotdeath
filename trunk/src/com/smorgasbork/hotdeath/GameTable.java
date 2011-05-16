@@ -221,12 +221,64 @@ public class GameTable extends View
 		m_topMargin = m_cardHeight / 3;
 		m_bottomMargin = m_cardHeight / 3;
 		
-		m_ptDrawPile = new Point (w / 2 - 5 * m_cardWidth / 4, h / 2 - m_cardHeight);
-		m_ptDiscardPile = new Point (w / 2 + m_cardWidth / 4, h / 2 - m_cardHeight);
+		if (h < 4.5 * m_cardHeight)
+		{
+			// probably landscape on a small device...
+			m_topMargin = m_cardHeight / 4;
+			m_bottomMargin = m_cardHeight / 4;
+			m_ptDrawPile = new Point (w / 2 - 5 * m_cardWidth / 4, h / 2 - m_cardHeight / 2);
+			m_ptDiscardPile = new Point (w / 2 + m_cardWidth / 4, h / 2 - m_cardHeight / 2);
+			m_ptDirColor = new Point (m_ptDiscardPile.x + 2 * m_cardWidth + m_bmpDirColorCCW.getWidth() / 4 - m_bmpPlayerIndicator[0][0].getWidth(), h / 2 - m_bmpDirColorCCW.getWidth() / 2);
+		}
+		else
+		{
+			// portrait
+			m_ptDrawPile = new Point (w / 2 - 5 * m_cardWidth / 4, h / 2 - m_cardHeight);
+			m_ptDiscardPile = new Point (w / 2 + m_cardWidth / 4, h / 2 - m_cardHeight);
+			m_ptDirColor = new Point (w /2 - m_bmpDirColorCCW.getWidth() / 2, h / 2 + m_cardHeight / 4);
+		}
+
+		m_ptPlayerIndicator[Game.SEAT_NORTH - 1] = new Point (m_ptDirColor.x + m_bmpDirColorCCW.getWidth() / 2 - m_bmpPlayerIndicator[0][0].getWidth() / 2, m_ptDirColor.y - m_bmpPlayerIndicator[0][0].getHeight());
+		m_ptPlayerIndicator[Game.SEAT_EAST - 1] = new Point (m_ptDirColor.x + m_bmpDirColorCCW.getWidth(), m_ptDirColor.y + m_bmpDirColorCCW.getHeight() / 2 -  m_bmpPlayerIndicator[0][0].getHeight() / 2);
+		m_ptPlayerIndicator[Game.SEAT_SOUTH - 1] = new Point (m_ptDirColor.x + m_bmpDirColorCCW.getWidth() / 2 - m_bmpPlayerIndicator[0][0].getWidth() / 2, m_ptDirColor.y + m_bmpDirColorCCW.getHeight());
+		m_ptPlayerIndicator[Game.SEAT_WEST - 1] = new Point (m_ptDirColor.x - m_bmpPlayerIndicator[0][0].getWidth(), m_ptDirColor.y + m_bmpDirColorCCW.getHeight() / 2 -  m_bmpPlayerIndicator[0][0].getHeight() / 2);
+
+		String numstr = "0";
+		Rect textBounds = new Rect();
+		m_paintScoreText.getTextBounds(numstr, 0, numstr.length(), textBounds);
 		
 		m_cardSpacing = (int)(m_cardWidth / 2);
 		m_cardSpacingHuman = 2 * (int)(m_cardWidth / 3);
+		
+		// figure out what the maximum number of cards you can display will be
+		
+		// calculate max cards in layout 1 (N/S cards live between E/W cards)
+		
+		int humanPlayerArea = w - 2 * m_cardWidth - 2 * m_leftMargin - 2 * m_rightMargin;
+		int maxNumHumanCards = (int)((humanPlayerArea - m_cardWidth) / m_cardSpacingHuman) + 1;
 
+		int computerPlayerArea = h - m_topMargin - m_bottomMargin - (int)(textBounds.height() * 1.2);
+		int maxNumComputerCards = (int)((computerPlayerArea - m_cardHeight) / m_cardSpacing) + 1;
+		
+		int maxCardsLayout1 = (maxNumComputerCards > maxNumHumanCards) ? maxNumHumanCards : maxNumComputerCards;
+
+		// calculate max cards in layout 2 (E/W cards live between N/S cards)
+		
+		humanPlayerArea = w - m_leftMargin - m_rightMargin;
+		maxNumHumanCards = (int)((humanPlayerArea - m_cardWidth) / m_cardSpacingHuman) + 1;
+
+		computerPlayerArea = h - 2 * m_cardHeight - 2 * m_topMargin - 2 * m_bottomMargin;
+		maxNumComputerCards = (int)((computerPlayerArea - m_cardHeight) / m_cardSpacing) + 1;
+			
+		int maxCardsLayout2 = (maxNumComputerCards > maxNumHumanCards) ? maxNumHumanCards : maxNumComputerCards;
+		
+		m_maxCardsDisplay = (maxCardsLayout1 > maxCardsLayout2) ? maxCardsLayout1 : maxCardsLayout2;
+
+		Log.d("HDU", "[onSizeChanged] maxCardsLayout1: " + maxCardsLayout1);
+		Log.d("HDU", "[onSizeChanged] maxCardsLayout2: " + maxCardsLayout2);
+		Log.d("HDU", "[onSizeChanged] m_maxCardsDisplay: " + m_maxCardsDisplay);
+
+		
 		m_maxWidthHand = (m_maxCardsDisplay - 1) * m_cardSpacing + m_cardWidth;
 		m_maxHeightHand = (m_maxCardsDisplay - 1) * m_cardSpacing + m_cardHeight;
 
@@ -236,13 +288,6 @@ public class GameTable extends View
 		m_ptSeat[Game.SEAT_EAST - 1] = new Point (w - (m_cardWidth + m_rightMargin), h / 2);
 		m_ptSeat[Game.SEAT_SOUTH - 1] = new Point (w / 2, h - (m_cardHeight + m_bottomMargin));
 		m_ptSeat[Game.SEAT_WEST - 1] = new Point (m_leftMargin, h / 2);
-
-		m_ptDirColor = new Point (w /2 - m_bmpDirColorCCW.getWidth() / 2, h / 2 + m_cardHeight / 4);
-		
-		m_ptPlayerIndicator[Game.SEAT_NORTH - 1] = new Point (w / 2 - m_bmpPlayerIndicator[0][0].getWidth() / 2, m_ptDirColor.y - m_bmpPlayerIndicator[0][0].getHeight());
-		m_ptPlayerIndicator[Game.SEAT_EAST - 1] = new Point (m_ptDirColor.x + m_bmpDirColorCCW.getWidth(), m_ptDirColor.y + m_bmpDirColorCCW.getHeight() / 2 -  m_bmpPlayerIndicator[0][0].getHeight() / 2);
-		m_ptPlayerIndicator[Game.SEAT_SOUTH - 1] = new Point (w / 2 - m_bmpPlayerIndicator[0][0].getWidth() / 2, m_ptDirColor.y + m_bmpDirColorCCW.getHeight());
-		m_ptPlayerIndicator[Game.SEAT_WEST - 1] = new Point (m_ptDirColor.x - m_bmpPlayerIndicator[0][0].getWidth(), m_ptDirColor.y + m_bmpDirColorCCW.getHeight() / 2 -  m_bmpPlayerIndicator[0][0].getHeight() / 2);
 		
 		m_ptWinningMessage = new Point (m_ptSeat[Game.SEAT_SOUTH - 1].x - m_bmpWinningMessage[0].getWidth() / 2, m_ptSeat[Game.SEAT_SOUTH - 1].y - m_bmpWinningMessage[0].getHeight() * 5 / 4);
 		
@@ -259,19 +304,15 @@ public class GameTable extends View
 				m_ptSeat[Game.SEAT_SOUTH - 1].y + m_cardHeight - m_bmpCardBadge.getHeight() / 2);
 		m_ptCardBadge[Game.SEAT_WEST - 1] = new Point (m_ptSeat[Game.SEAT_WEST - 1].x + m_cardWidth - m_bmpCardBadge.getWidth() / 2,
 				m_ptSeat[Game.SEAT_WEST - 1].y + m_maxHeightHand / 2 - m_bmpCardBadge.getHeight() / 2);
-
-		String numstr = "0";
-		Rect textBounds = new Rect();
-		m_paintScoreText.getTextBounds(numstr, 0, numstr.length(), textBounds);
 		
 		m_ptScoreText[Game.SEAT_NORTH - 1] = new Point (m_ptSeat[Game.SEAT_NORTH - 1].x,
-				m_ptSeat[Game.SEAT_NORTH - 1].y - (int)(textBounds.height() * 1.2));
+				m_ptSeat[Game.SEAT_NORTH - 1].y - (int)(textBounds.height() * 1.1));
 		m_ptScoreText[Game.SEAT_EAST - 1] = new Point (m_ptSeat[Game.SEAT_EAST - 1].x + m_cardWidth,
-			m_ptSeat[Game.SEAT_EAST - 1].y - m_maxHeightHand / 2 - (int)(textBounds.height() * 1.2));
+			m_ptSeat[Game.SEAT_EAST - 1].y - m_maxHeightHand / 2 - (int)(textBounds.height() * 1.1));
 		m_ptScoreText[Game.SEAT_SOUTH - 1] = new Point (m_ptSeat[Game.SEAT_SOUTH - 1].x,
 				m_ptSeat[Game.SEAT_SOUTH - 1].y + m_cardHeight + (int)(textBounds.height() * 1.5));
 		m_ptScoreText[Game.SEAT_WEST - 1] = new Point (m_ptSeat[Game.SEAT_WEST - 1].x,
-				m_ptSeat[Game.SEAT_WEST - 1].y - m_maxHeightHand / 2 - (int)(textBounds.height() * 1.2));
+				m_ptSeat[Game.SEAT_WEST - 1].y - m_maxHeightHand / 2 - (int)(textBounds.height() * 1.1));
 
 		m_ptMessages = new Point (m_ptSeat[Game.SEAT_SOUTH - 1].x, m_ptSeat[Game.SEAT_SOUTH - 1].y - 3 * m_cardHeight / 4);
 		

@@ -1,6 +1,7 @@
 package com.smorgasbork.hotdeath;
 
 import java.util.Random;
+//import android.util.Log;
 import org.json.*;
 
 
@@ -66,6 +67,11 @@ public class ComputerPlayer extends Player
 		// FIXME -- we need a real strategy
 		int maxCount = 0;
 		int maxColor = 0;
+		
+		if (m_hand.getNumCards() == 0)
+		{
+			return Card.COLOR_RED;
+		}
 
 		for (int i = Card.COLOR_RED; i < Card.COLOR_WILD; i++)
 		{
@@ -79,6 +85,12 @@ public class ComputerPlayer extends Player
 
 		m_chosenColor = maxColor;
 		
+		if (maxColor == 0)
+		{
+			// should never happen, but just in case...
+			return Card.COLOR_RED;
+		}
+		
 		return m_chosenColor;
 	}
 	
@@ -86,24 +98,24 @@ public class ComputerPlayer extends Player
 	{
 		if (m_seat == Game.SEAT_WEST) 
 		{
-			m_aggression = m_go.getP1Agg() - 6;
+			m_aggression = m_go.getP1Agg();
 			m_skill = m_go.getP1Skill();
 		}
 		else if (m_seat == Game.SEAT_NORTH)
 		{
-			m_aggression = m_go.getP2Agg() - 6;
+			m_aggression = m_go.getP2Agg();
 			m_skill = m_go.getP2Skill();
 		}
 		else if (m_seat == Game.SEAT_EAST)
 		{
-			m_aggression = m_go.getP3Agg() - 6;
+			m_aggression = m_go.getP3Agg();
 			m_skill = m_go.getP3Skill();
 		}
 		// this is only here so that we can have a 4th computer player
 		// if we are testing.
 		else 
 		{
-			m_aggression = m_go.getP2Agg() - 6;
+			m_aggression = m_go.getP2Agg();
 			m_skill = m_go.getP2Skill();
 		}
 	}
@@ -148,56 +160,178 @@ public class ComputerPlayer extends Player
 				}
 			}
 			
+			//Log.d("HDU", "Looking for card to play...");
 			for (int i = 0; i < m_hand.getNumCards(); i++) 
 			{
 				Card tc = m_hand.getCard(i);
-				if (m_game.checkCard(m_hand, tc, false))
-				{
-					boolean bIsDefender = m_game.getLastCardCheckedIsDefender();
-					// if we've got a defender, play it
-					if (bIsDefender)
-					{
-						bestcard = tc;
-						break;
-					}
-					
-					// otherwise, try to find the one with the highest point value
-					// so we can toss it out of our hand
-					
-					// TODO: improve this AI
-					//   - maintain color balance
-					//   - if total points in hand are > 69, hang onto the 69 card
-					//   - throw the mystery draw on numbered cards
-					//   - don't throw MAD when point count in hand is too high (unless player count < 4)
+				
+				//Log.d("HDU", " - considering card: " + m_game.cardToString(tc));
 
-					int testval = 0;
-					
-					if (this.m_skill >= 1)
+				if (!m_game.checkCard(m_hand, tc, false))
+				{
+					continue;
+				}
+				
+				
+				boolean bIsDefender = m_game.getLastCardCheckedIsDefender();
+				// if we've got a defender, play it
+				if (bIsDefender)
+				{
+					bestcard = tc;
+					break;
+				}
+				
+				// otherwise, try to find the one with the highest point value
+				// so we can toss it out of our hand
+				
+				// TODO: improve this AI
+				//   - throw the mystery draw on numbered cards
+				//   - don't throw MAD when point count in hand is too high (unless player count < 4)
+				//   - consider the damage of offensive cards; look to hit players with low card counts
+				//   - advanced: throw the MAD card to catch an opponent and force him over 1000 points,
+				//     even if you have hundreds of points, if you're assured of winning
+				
+				int testval = 0;
+				
+				if (this.m_skill >= 1)
+				{
+					// Strong and Expert
+					if (tc.getColor() == Card.COLOR_WILD)
 					{
-						// Strong and Expert
-						if (tc.getColor() == Card.COLOR_WILD)
+						if (wild_count < opponent_card_count - 1)
 						{
-							if (wild_count < opponent_card_count - 1)
-							{
-								testval = 0;
-							}
-						}
-						else
-						{
-							testval = tc.getCurrentValue();
+							testval = 0;
 						}
 					}
 					else
 					{
-						// even weak players can do this
 						testval = tc.getCurrentValue();
 					}
 					
-					if (testval >= maxpointval) 
+					if ((tc.getID() == Card.ID_YELLOW_1_MAD) && (m_game.getActivePlayerCount() > 3))
 					{
-						maxpointval = testval;
-						bestcard = tc;
+						// don't throw the MAD card if the value of your own hand
+						// will be too high
+						int newHandValue = m_hand.calculateValue(false, tc);
+						
+						if (newHandValue < 10)
+						{
+							testval = 100;
+						}
+						else if (newHandValue < 20)
+						{
+							testval = 70;
+						}
+						else if (newHandValue < 50)
+						{
+							testval = 0;
+						}
+						else
+						{
+							testval = -20;
+						}
 					}
+					
+					if (tc.getID() == Card.ID_YELLOW_69)
+					{
+						// it's hard to directly calculate the value of the 69 without looking
+						// at the whole hand -- if you've got hundreds of points in your hand,
+						// the 69 is a good card to keep, because it locks your score in at
+						// 69, no matter how much other junk you've got in your hand.
+						int oldHandValue = m_hand.calculateValue();
+						int newHandValue = m_hand.calculateValue(false, tc);
+						
+						testval = oldHandValue - newHandValue;
+					}
+					
+					if (tc.getID() == Card.ID_WILD_MYSTERY)
+					{
+						// You've GOT to throw the mystery draw on a 69!  That's the whole fun of the
+						// game.  You want to avoid throwing it on non-numbered cards, and the higher the
+						// numbered card, the more you want to throw it...
+						Card lpc = m_game.getLastPlayedCard();
+						int lpv = lpc.getValue();
+						
+						if (lpc.getID() == Card.ID_YELLOW_69)
+						{
+							testval = 200;
+						}
+						else if (lpv > 0)
+						{
+							if(lpv < 5)
+							{
+								testval = 15;
+							}
+							else if (lpv < 8)
+							{
+								testval = 30;
+							}
+							else if (lpv < 10)
+							{
+								testval = 50;
+							}
+						}
+						
+					}
+				}
+				else
+				{
+					// even weak players can do this
+					testval = tc.getCurrentValue();
+				}
+
+				//Log.d("HDU", "   - testval: " + testval);
+
+				if (this.m_skill >= 2)
+				{
+					// Expert
+					boolean considerColorBalance = false;
+					
+					// the higher the aggression, the longer the player is willing to try to 
+					// maintain color balance in his hand; for example, an aggression level 6
+					// is willing to wait until the opponent has 2 cards left; it's a bit like
+					// a game of chicken...
+					if ((opponent_card_count + m_aggression / 3) > 3)
+					{
+						considerColorBalance = true;
+					}
+
+					if (considerColorBalance)
+					{
+						double colorBalanceImprovement = computeChangeInColorBalance(tc);
+						
+						// getting closer to 0 is a good thing
+						if (colorBalanceImprovement < -0.5)
+						{
+							// this could really be a good thing to play
+							testval += 40;
+						}
+						else if (colorBalanceImprovement < -0.25)
+						{
+							// this could be a good thing to play
+							testval += 20;
+						}
+						else if (colorBalanceImprovement > 0.5)
+						{
+							// really don't want to play this
+							testval -= 40;
+						}
+						else if (colorBalanceImprovement > 0.25)
+						{
+							// don't want to play this
+							testval -= 20;
+						}
+
+						//Log.d("HDU", "   - colorbalanceimprovement: " + colorBalanceImprovement + ", testval: " + testval);
+
+
+					}
+				}
+				
+				if (testval >= maxpointval) 
+				{
+					maxpointval = testval;
+					bestcard = tc;
 				}
 			}
 		}
@@ -215,7 +349,81 @@ public class ComputerPlayer extends Player
 
 	}
 	
+	public double computeChangeInColorBalance (Card c)
+	{
+		double balanceBefore = computeColorBalance(null);
+		double balanceAfter = computeColorBalance(c);
+		
+		double delta = (balanceAfter - balanceBefore) / balanceBefore;
+		
+		return delta;
+	}
 	
+	public double computeColorBalance (Card c)
+	{
+		int[] colorTotals;
+		
+		colorTotals = new int[4];
+		
+		colorTotals[0] = 0;
+		colorTotals[1] = 0;
+		colorTotals[2] = 0;
+		colorTotals[3] = 0;
+
+		for (int i = 0; i < m_hand.getNumCards(); i++)
+		{
+			switch (m_hand.getCard(i).getColor())
+			{
+			case Card.COLOR_RED:
+				colorTotals[0]++;
+				break;
+			case Card.COLOR_GREEN:
+				colorTotals[1]++;
+				break;
+			case Card.COLOR_BLUE:
+				colorTotals[2]++;
+				break;
+			case Card.COLOR_YELLOW:
+				colorTotals[3]++;
+				break;
+			}
+		}
+		
+		if (c != null)
+		{
+			switch (c.getColor())
+			{
+			case Card.COLOR_RED:
+				colorTotals[0]--;
+				break;
+			case Card.COLOR_GREEN:
+				colorTotals[1]--;
+				break;
+			case Card.COLOR_BLUE:
+				colorTotals[2]--;
+				break;
+			case Card.COLOR_YELLOW:
+				colorTotals[3]--;
+				break;
+			}
+		}
+		
+		double avg = (colorTotals[0] + colorTotals[1] + colorTotals[2] + colorTotals[3]) / 4;
+		
+		double balance = 0;
+		
+		for (int i = 0; i < 4; i++)
+		{
+			balance += Math.pow (colorTotals[i] - avg, 2);
+		}
+		
+		balance = Math.sqrt (balance);
+		
+		return balance;
+	}
+	
+	
+	// find the minimum remaining cards of all other players at the table
 	public int getMinCardsRemaining()
 	{
 		int min_cards = 1000000;

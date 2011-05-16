@@ -5,6 +5,11 @@ BUGS
 - got all bastard cards didn't seem to indicate to the user that the game was over;
   certainly didn't bring back other players' hands
 
+- splash screen on landscape looks terrible
+
+- when you are victimized, and you have a defensive card, you only have two choices --
+  play the defensive card or draw; you shouldn't be able to draw -- you should have
+  to pass, take the penalty, and then you can draw if you want to.
 
 - artwork:
 

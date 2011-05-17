@@ -32,3 +32,7 @@ Version 0.9.1				2011-05-02
  - bugfix: at the end of a round, hit "Back", "Continue", "Back" -- crash
  - bugfix: if computer player went out on a Wild card, he wouldn't pick a color,
    and bad things would happen...
+
+ Version 0.9.3				2011-05-16
+ - bugfix: if you tap the card table immediately after starting a new game (and
+   before the cards were dealt), you could cause a crash

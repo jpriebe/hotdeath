@@ -461,12 +461,12 @@ public class GameTable extends View
 				return true;
 			}
 
-			if (m_drawPileBoundingRect.contains (x, y))
+			if (m_drawPileBoundingRect != null && m_drawPileBoundingRect.contains (x, y))
 			{
 				m_touchDrawPile = true;
 			}
 			
-			if (m_discardPileBoundingRect.contains (x, y))
+			if (m_discardPileBoundingRect != null && m_discardPileBoundingRect.contains (x, y))
 			{
 				m_waitingForTouchAndHold = true;
 				m_handler.postDelayed (m_touchAndHoldTask, 1000);

@@ -36,3 +36,6 @@ Version 0.9.1				2011-05-02
  Version 0.9.3				2011-05-16
  - bugfix: if you tap the card table immediately after starting a new game (and
    before the cards were dealt), you could cause a crash
+   
+ Version 1.0.0				2011-05-17
+ - labeled as version 1.0.0 - released to market

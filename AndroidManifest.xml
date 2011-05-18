@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.smorgasbork.hotdeath"
       android:versionCode="1"
-      android:versionName="0.9.3"
+      android:versionName="1.0.0"
       android:installLocation="auto">
     <uses-sdk android:minSdkVersion="7" />
     <uses-permission android:name="android.permission.VIBRATE" />

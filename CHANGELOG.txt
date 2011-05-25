@@ -39,3 +39,22 @@ Version 0.9.1				2011-05-02
    
  Version 1.0.0				2011-05-17
  - labeled as version 1.0.0 - released to market
+ 
+ Version 1.0.1              2011-05-25
+ 
+ - allow R Skip to be played on S and S Double; allow S and S Double to be played on R Skip
+ 
+ - improved support for various displays (mdpi like HTC legend - 320x480, xhdpi,
+   xlarge-mdpi, xlarge-hdpi)
+   
+ - bugfix: fixed java.lang.ArrayIndexOutOfBoundsException in
+   GameTable.findTouchedCard() > GameTable.findTouchedCardHand() > Hand.getCard()
+ 
+ - bugfix: game would redeal when you changed orientation right after the deal
+ 
+ - bugfix: crash when orientation changed while card info or card help dialog was showing
+ 
+ - bugfix: crash when trying to access help on green reverse skip - typo!
+ 
+ - bugfix: game could crash if it tried to grab a game state snapshot too early
+ 

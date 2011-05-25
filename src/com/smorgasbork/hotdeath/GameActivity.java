@@ -29,6 +29,9 @@ public class GameActivity extends Activity
 	public static final int DIALOG_CARD_HELP = 0;
 	public static final int DIALOG_CARD_CATALOG = 1;
 	
+	private Dialog m_dlgCardCatalog = null;
+	private Dialog m_dlgCardHelp = null;
+	
 	private GameTable m_gt;
 	private Game m_game;
 	private GameOptions m_go;
@@ -93,7 +96,19 @@ public class GameActivity extends Activity
 	@Override
 	protected void onPause ()
 	{
+		if (m_dlgCardHelp != null && m_dlgCardHelp.isShowing())
+		{
+			m_dlgCardHelp.dismiss();
+		}
+		if (m_dlgCardCatalog != null && m_dlgCardCatalog.isShowing())
+		{
+			m_dlgCardCatalog.dismiss();
+		}
+
+		getIntent().putExtra(GameActivity.STARTUP_MODE, GameActivity.STARTUP_MODE_CONTINUE);
+
 		super.onPause();
+		
 		m_game.pause();
 		String gamestate = m_game.getSnapshot();
 		
@@ -115,68 +130,56 @@ public class GameActivity extends Activity
       //ignore orientation change  (use in conjunction with settings in the manifest)
       super.onConfigurationChanged(newConfig); 
     } 
-		
-	@Override
-	protected Dialog onCreateDialog(int id)
-	{
-		Dialog dlg = null;
-		switch (id) 
+    
+    public void showCardHelp ()
+    {
+    	if (m_dlgCardHelp == null)
+    	{
+    		m_dlgCardHelp = new TapDismissableDialog(this);
+    		m_dlgCardHelp.setContentView(R.layout.dlg_card_help);    		
+    	}
+		    	
+		int cid = m_gt.getHelpCardID();
+		Card c = m_gt.getCardByID (cid);
+		if (c != null)
 		{
-			case DIALOG_CARD_HELP:
-				dlg = new TapDismissableDialog(this);
-				dlg.setContentView(R.layout.dlg_card_help);
-				
-				break;
-				
-			case DIALOG_CARD_CATALOG:
-				dlg = new Dialog(this);
-				dlg.requestWindowFeature(Window.FEATURE_NO_TITLE);
-				dlg.setContentView(R.layout.dlg_card_catalog);
-				GridView gridview = (GridView) dlg.findViewById(R.id.gridview);
-			    gridview.setAdapter(new CardImageAdapter(this));
-			    
-			    gridview.setOnItemClickListener(new OnItemClickListener() {
-			        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-			        	CardImageAdapter cia = (CardImageAdapter)((GridView)parent).getAdapter();
-			        	Integer[] cardids = cia.getCardIDs();
-			        	
-			        	GameActivity.this.m_gt.setHelpCardID (cardids[position]);
-			        	GameActivity.this.showDialog(GameActivity.DIALOG_CARD_HELP);
-			        }
-			    });
-			    
-				break;
-		}
-		
-		return dlg;
-	}
-	
-	@Override
-	protected void onPrepareDialog(int id, Dialog d)
-	{
-		switch (id) 
-		{
-			case DIALOG_CARD_HELP:
-				int cid = m_gt.getHelpCardID();
-				Card c = m_gt.getCardByID (cid);
-				if (c != null)
-				{
-					d.setTitle(m_game.cardToString(c));
-	
-					TextView text = (TextView) d.findViewById(R.id.text);
-					text.setText(m_gt.getCardHelpText(cid));
-	
-					ImageView image = (ImageView) d.findViewById(R.id.image);
-					image.setImageBitmap(m_gt.getCardBitmap(cid));
-				}
+			m_dlgCardHelp.setTitle(m_game.cardToString(c));
 
-				break;
+			TextView text = (TextView) m_dlgCardHelp.findViewById(R.id.text);
+			text.setText(m_gt.getCardHelpText(cid));
+
+			ImageView image = (ImageView) m_dlgCardHelp.findViewById(R.id.image);
+			image.setImageBitmap(m_gt.getCardBitmap(cid));
 		}
+
+    	m_dlgCardHelp.show();
+    }
+    
+    public void showCardCatalog ()
+    {
+    	if (m_dlgCardCatalog == null)
+    	{
+    		m_dlgCardCatalog = new Dialog(this);
+    		m_dlgCardCatalog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    		m_dlgCardCatalog.setContentView(R.layout.dlg_card_catalog);
+			GridView gridview = (GridView) m_dlgCardCatalog.findViewById(R.id.gridview);
+		    gridview.setAdapter(new CardImageAdapter(this));
+		    
+		    gridview.setOnItemClickListener(new OnItemClickListener() {
+		        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+		        	CardImageAdapter cia = (CardImageAdapter)((GridView)parent).getAdapter();
+		        	Integer[] cardids = cia.getCardIDs();
+		        	
+		        	GameActivity.this.m_gt.setHelpCardID (cardids[position]);
+		        	//GameActivity.this.showDialog(GameActivity.DIALOG_CARD_HELP);
+		        	showCardHelp();
+		        }
+		    });
+    	}
+    	
+    	m_dlgCardCatalog.show();
+    }
 		
-		return;
-	}
-	
-	
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu)
 	{
@@ -217,13 +220,14 @@ public class GameActivity extends Activity
 		switch (item.getItemId())
 		{
 		case R.id.menu_item_draw:
-			m_game.humanPlayerDraw();
+			m_game.drawPileTapped();
 			return true;
 		case R.id.menu_item_pass:
 			m_game.humanPlayerPass();
 			return true;
 		case R.id.menu_item_card_info:
-			showDialog(DIALOG_CARD_CATALOG);
+			//showDialog(DIALOG_CARD_CATALOG);
+			showCardCatalog();
 			return true;
 		}
 		

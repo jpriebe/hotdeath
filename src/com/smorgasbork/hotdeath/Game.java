@@ -236,6 +236,11 @@ public class Game extends Thread {
 			return "";
 		}
 		
+		if (m_snapshot == null)
+		{
+			return "";
+		}
+		
 		return m_snapshot.toString();
 	}
 	
@@ -589,7 +594,7 @@ public class Game extends Thread {
 		m_numCardsPlayed = 0;
 
 		m_currPlayer = m_startPlayer;
-
+		
 		mainLoop ();
 	}
 	
@@ -964,9 +969,9 @@ public class Game extends Thread {
 		if ((value == Card.VAL_D) && (cvalue == Card.VAL_D_SPREAD)) return true;
 		if ((value == Card.VAL_D_SPREAD) && (cvalue == Card.VAL_D)) return true;
 		if ((value == Card.VAL_R) && (cvalue == Card.VAL_R_SKIP)) return true;
-		if ((value == Card.VAL_R_SKIP) && (cvalue == Card.VAL_R)) return true;
-		if ((value == Card.VAL_S) && (cvalue == Card.VAL_S_DOUBLE)) return true;
-		if ((value == Card.VAL_S_DOUBLE) && (cvalue == Card.VAL_S)) return true;
+		if ((value == Card.VAL_R_SKIP) && ((cvalue == Card.VAL_R) || (cvalue == Card.VAL_S) || (cvalue == Card.VAL_S_DOUBLE))) return true;
+		if ((value == Card.VAL_S) && ((cvalue == Card.VAL_S_DOUBLE) || (cvalue == Card.VAL_R_SKIP))) return true;
+		if ((value == Card.VAL_S_DOUBLE) && ((cvalue == Card.VAL_S) || (cvalue == Card.VAL_R_SKIP))) return true;
 
 		if (m_go.getStandardRules()) 
 		{
@@ -1032,7 +1037,7 @@ public class Game extends Thread {
 
 		else 
 		{
-			msg = getString(R.string.msg_tap_discard_pile);
+			msg = getString(R.string.msg_tap_draw_pile);
 			promptUser(msg);
 			waitForNextRound ();
 		}
@@ -1069,6 +1074,22 @@ public class Game extends Thread {
 
 		startRound();
 	}
+	
+	public void drawPileTapped ()
+	{
+		if (m_waitingToStartRound)
+		{
+			m_waitingToStartRound = false;
+		}
+		
+		if (!(m_currPlayer instanceof HumanPlayer))
+		{
+			return;
+		}
+		
+		((HumanPlayer)m_currPlayer).turnDecisionDrawCard();
+	}
+	
 	
 	public void discardPileTapped ()
 	{
@@ -1215,16 +1236,6 @@ public class Game extends Thread {
 	}
 
 
-	public void humanPlayerDraw ()
-	{
-		if (!(m_currPlayer instanceof HumanPlayer))
-		{
-			return;
-		}
-		
-		((HumanPlayer)m_currPlayer).turnDecisionDrawCard();
-	}
-	
 	
 	public void humanPlayerPass ()
 	{

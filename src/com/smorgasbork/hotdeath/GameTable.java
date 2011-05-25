@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.util.Log;
 
 import android.app.AlertDialog;
-import android.app.Activity;
 
 import android.content.DialogInterface;
 
@@ -67,11 +66,11 @@ public class GameTable extends View
 	private int m_cardWidth = 43;
 	private int m_cardHeight = 59;
 	*/
-	private int m_cardWidth = 77;
-	private int m_cardHeight = 120;
+	private int m_cardWidth = 0;
+	private int m_cardHeight = 0;
 	
-	private int m_emoticonWidth = 40;
-	private int m_emoticonHeight = 30;
+	private int m_emoticonWidth = 0;
+	private int m_emoticonHeight = 0;
 	
 	private Point m_ptTouchDown = null;
 	private boolean m_heldSteady = false;
@@ -211,6 +210,12 @@ public class GameTable extends View
 		m_bmpWinningMessage = new Bitmap[4];
 		
 		initCards();
+		
+		m_cardHeight = m_bmpCardBack.getHeight();
+		m_cardWidth = m_bmpCardBack.getWidth();
+		
+		m_emoticonHeight = m_bmpEmoticonAggressor.getHeight();
+		m_emoticonWidth = m_bmpEmoticonAggressor.getWidth();
 	}
 	
 	@Override
@@ -580,7 +585,7 @@ public class GameTable extends View
 	
 	private void drawPileTapped ()
 	{
-		m_game.humanPlayerDraw();
+		m_game.drawPileTapped();
 	}
 	
 	private void discardPileTapped ()
@@ -1039,7 +1044,7 @@ public class GameTable extends View
 	    Resources res = this.getContext().getResources ();
 
 	    BitmapFactory.Options opt = new BitmapFactory.Options();
-	    opt.inScaled = false;
+	    //opt.inScaled = false;
 	    
 	    m_bmpCardBack = BitmapFactory.decodeResource(res, R.drawable.card_back, opt);
 
@@ -1407,7 +1412,7 @@ public class GameTable extends View
 		
 		m_imageIDLookup.put (Card.ID_GREEN_R_SKIP, R.drawable.card_green_r_skip);
 		m_imageLookup.put (Card.ID_GREEN_R_SKIP, BitmapFactory.decodeResource(res, R.drawable.card_green_r_skip, opt));
-		m_cardHelpLookup.put (Card.ID_GREEN_S_DOUBLE, R.string.cardhelp_r_skip);
+		m_cardHelpLookup.put (Card.ID_GREEN_R_SKIP, R.string.cardhelp_r_skip);
         m_cardLookup.put (Card.ID_GREEN_R_SKIP, new Card(-1, Card.COLOR_GREEN, Card.VAL_R_SKIP, Card.ID_GREEN_R_SKIP, 40));		
 		
         if (m_go.getFamilyFriendly())
@@ -1707,8 +1712,9 @@ public class GameTable extends View
 	{
 		m_helpCardID = c.getID();
 
-		Activity a = (Activity)(getContext());
-		a.showDialog(GameActivity.DIALOG_CARD_HELP);
+		GameActivity a = (GameActivity)(getContext());
+		//a.showDialog(GameActivity.DIALOG_CARD_HELP);
+		a.showCardHelp();
 	}
 	
 	public void Toast (String msg)

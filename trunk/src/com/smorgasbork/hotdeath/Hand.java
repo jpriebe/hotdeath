@@ -8,9 +8,18 @@ public class Hand {
 	private Card[]	m_cards;
 	private int		m_numCards;
 	
-	int getNumCards() { return m_numCards; }
-	Card getCard(int i) { return m_cards[i]; }
 	Card[] getCards() { return m_cards; }
+	int getNumCards() { return m_numCards; }
+	
+	Card getCard(int i)
+	{ 
+		if (i < 0 || i > m_numCards - 1)
+		{
+			return null;
+		}
+		return m_cards[i]; 
+	}
+	
 
 	public Hand(Player p)
 	{

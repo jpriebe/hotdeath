@@ -1,14 +1,17 @@
 BUGS
 
-- change orientation right after a deal, and the round starts over... you
-  can keep changing orientation and getting different deals.
-
-- got all bastard cards didn't seem to indicate to the user that the game was over;
-  certainly didn't bring back other players' hands
-
 - when you are victimized, and you have a defensive card, you only have two choices --
   play the defensive card or draw; you shouldn't be able to draw -- you should have
   to pass, take the penalty, and then you can draw if you want to.
+
+- Unverified (may not exist anymore):
+  got all bastard cards didn't seem to indicate to the user that the game was over;
+  certainly didn't bring back other players' hands
+
+- Unverified (may not exist anymore):
+  if user has to draw a huge number like 69, and the draw pile and discard piles are empty, 
+  you get a ton of "no cards in draw pile or discard pile"
+
 
 FEATURES
 
@@ -20,62 +23,24 @@ FEATURES
       
    - messages to clarify penalties like "South draws, takes penalty"
 
-   - stackers: Double Skip, Reverse Skip ?
-   
-   - if user has to draw a huge number like 69, and the draw pile and discard piles are empty, 
-     you get a ton of "no cards in draw pile or discard pile"
-     
-- drawing
-
-   - resolution independence:
-
-     - create a drawable/ directory; move all images into there:
-
-       mdpi_card_blue_6.png (cards are 80px tall)
-       hdpi_card_blue_6.png (cards are 120px tall)
-       xhdpi_card_blue_6.png (cards are 160px tall)
-       ... etc ...
-
-       (these follow the 3:4:6:8 scaling ratio for ldpi:mdpi:hdpi:xhdpi)
-
-     - have the following alternative directories set up, and in them create
-       alias files for each image, pointing at the appropriate resource
-
-       drawable-mdpi  ==> mdpi_*
-       drawable-hdpi  ==> hdpi_*
-       drawable-xhdpi ==> xhdpi_*
-       drawable-xlarge-mdpi ==> hdpi_*
-       drawable-xlarge-hdpi ==> xhdpi_*
-
-       (note that we point the xlarge tablet screens at higher-res, larger images
-       so that the cards show up larger on those devices -- we want to show more
-       cards, but we also want the game to be more comfortable, too)
-
-       Example alias file:
-
-drawable-xlarge-mdpi/card_blue_6.xml
-<?xml version="1.0" encoding="utf-8"?>
-<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/hdpi_card_blue_6" />
-       
-      
-
  Would be nice:
  
-    - pause mechanism for new players?  tap to advance after each card played...
+  - pause mechanism for novice players?  tap to advance after each card played...
 
-   - when player is ejected, speed up the game even more (maybe even stop updates
-     altogether or allow player to "jump" to the end of the game)
-
+  - when player is ejected, speed up the game even more (maybe even stop updates
+    altogether or allow player to "jump" to the end of the game)
  
   - if a matching card is played, you get a toast saying "North threw another green 5"; otherwise, it's a bit hard to see what happened
  
   - continue improving AI for computer players
 
-
    
 ----------------------------------------------------------------------
 Done:
+
+- PNG drawable and APK filesize; I have 5 sets of cards embedded in the app; I had to use
+  pngquant 128 on all the PNGs to optimize their filesize.  This cut the app from 13MB to
+  6MB.  I tried going to 64 colors, but the results didn't look very good.
 
 - timing problems with Toasts - reuse one Toast object so that when you show it, it immediately
   clears the last message instead of queueing up a list of toasts!
@@ -90,3 +55,15 @@ Done:
 - state saving: Implement toJSON() methods in all game state objects; create JSONObject of game and its children; store string in Preferences;
   implement an alternate constructor for each game state object that takes a JSONObject as a parameter;
   when continuing, load the JSONObject from preferences; instantiate all objects using the information in this object.
+  
+- resolution independence:
+
+   drawable-mdpi/card_*.png (cards are 80px tall)
+   drawable-hdpi/card_*.png (cards are 120px tall)
+   drawable-xhdpi/card_*.png (cards are 160px tall)
+   drawable-xlarge-mdpi/card_*.png (cards are 120px tall)
+   drawable-xlarge-hdpi/card_*.png (cards are 160px tall)
+       
+   (these follow the 3:4:6:8 scaling ratio for ldpi:mdpi:hdpi:xhdpi, and then
+   I use larger images for the xlarge displays like tablets)
+  

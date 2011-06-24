@@ -753,6 +753,12 @@ public class CardDeck {
 
 	public void shuffle ()
 	{
+		int i;
+		
+		for ( i = 0; i < m_numCards; i++) {
+			m_cards[i].setFaceUp(false);
+		}
+
 		shuffle (7);
 	}
 
@@ -760,10 +766,6 @@ public class CardDeck {
 	{
 		int i, j, k;
 		Card cTemp;
-
-		for ( i = 0; i < m_numCards; i++) {
-			m_cards[i].setFaceUp(false);
-		}
 
 		Random rgen = new Random();
 		

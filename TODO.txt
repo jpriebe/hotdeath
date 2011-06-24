@@ -4,15 +4,6 @@ BUGS
   play the defensive card or draw; you shouldn't be able to draw -- you should have
   to pass, take the penalty, and then you can draw if you want to.
 
-- Unverified (may not exist anymore):
-  got all bastard cards didn't seem to indicate to the user that the game was over;
-  certainly didn't bring back other players' hands
-
-- Unverified (may not exist anymore):
-  if user has to draw a huge number like 69, and the draw pile and discard piles are empty, 
-  you get a ton of "no cards in draw pile or discard pile"
-
-
 FEATURES
 
 - artwork:

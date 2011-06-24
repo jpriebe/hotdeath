@@ -58,3 +58,18 @@ Version 0.9.1				2011-05-02
  
  - bugfix: game could crash if it tried to grab a game state snapshot too early
  
+ Version 1.0.2              2011-06-23
+
+ - bugfix: if player is forced to draw more cards than are available in the draw pile
+   plus the discard pile, game would lock up
+   
+ - bugfix: upon getting all bastard cards in hand, entire game would end; should have
+   just ended the round and given 0 points to the lucky player
+   http://code.google.com/p/hotdeath/issues/detail?id=1
+   
+ - bugfix: previously, we required that you have the Quitter, Big Brother, and Retaliation
+   at the end of a hand for the 1,000 point penalty; after some extensive research online,
+   I believe that should only be the Quitter and the Retaliation
+ 
+ - improved card docs so that all bastard cards' help contains the bastard card
+   information 

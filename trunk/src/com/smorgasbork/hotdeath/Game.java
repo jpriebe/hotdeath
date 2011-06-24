@@ -394,55 +394,116 @@ public class Game extends Thread {
 		String msg = String.format (getString(R.string.msg_dealing), seatToString(m_dealer.getSeat()), m_numCardsToDeal);
 		promptUser(msg);
 		
-		for (i = 0; i < 4 * m_numCardsToDeal; i++) 
+		// use this mechanism to set up scenarios for testing edge cases
+		boolean debugDeal = false;
+		if (debugDeal)
 		{
-			Card c = m_deck.getCard(i);
+			int[][] hands = {
+					/* All four bastard cards...
+					{Card.ID_BLUE_0_FUCKYOU, Card.ID_GREEN_0_QUITTER, Card.ID_YELLOW_0_SHITTER, Card.ID_RED_0_HD, Card.ID_BLUE_1, Card.ID_BLUE_2, Card.ID_BLUE_3},
+					{Card.ID_GREEN_1, Card.ID_GREEN_2, Card.ID_GREEN_3, Card.ID_GREEN_4, Card.ID_GREEN_5, Card.ID_GREEN_6, Card.ID_GREEN_7}, 
+					{Card.ID_RED_1, Card.ID_RED_2, Card.ID_RED_3, Card.ID_RED_4, Card.ID_RED_5, Card.ID_RED_6, Card.ID_RED_7}, 
+					{Card.ID_YELLOW_1, Card.ID_YELLOW_2, Card.ID_YELLOW_3, Card.ID_YELLOW_4, Card.ID_YELLOW_5, Card.ID_YELLOW_6, Card.ID_YELLOW_7}
+					*/ 
 
-			if (p.getSeat() == SEAT_SOUTH)
+					// this makes a mystery on a 69 highly likely
+					{Card.ID_YELLOW_6, Card.ID_WILD_MYSTERY},
+					{Card.ID_YELLOW_1, Card.ID_YELLOW_2}, 
+					{Card.ID_YELLOW_3, Card.ID_YELLOW_4, 
+							Card.ID_RED_1, Card.ID_RED_2, Card.ID_RED_3, Card.ID_RED_4, Card.ID_RED_5, Card.ID_RED_6, Card.ID_RED_7, Card.ID_RED_8, Card.ID_RED_9, Card.ID_RED_D, Card.ID_RED_R, Card.ID_RED_S, Card.ID_RED_S_DOUBLE, Card.ID_RED_R_SKIP,
+							Card.ID_GREEN_1, Card.ID_GREEN_2, Card.ID_GREEN_3, Card.ID_GREEN_4, Card.ID_GREEN_5, Card.ID_GREEN_6, Card.ID_GREEN_7, Card.ID_GREEN_8, Card.ID_GREEN_9, Card.ID_GREEN_D, Card.ID_GREEN_R, Card.ID_GREEN_S, Card.ID_GREEN_S_DOUBLE, Card.ID_GREEN_R_SKIP,
+							Card.ID_BLUE_1, Card.ID_BLUE_2, Card.ID_BLUE_3, Card.ID_BLUE_4, Card.ID_BLUE_5, Card.ID_BLUE_6, Card.ID_BLUE_7, Card.ID_BLUE_8, Card.ID_BLUE_9, Card.ID_BLUE_D, Card.ID_BLUE_R, Card.ID_BLUE_S, Card.ID_BLUE_S_DOUBLE, Card.ID_BLUE_R_SKIP
+					},
+					{Card.ID_YELLOW_5, Card.ID_YELLOW_69}
+			};
+			
+			for (i = 0; i < 4; i++)
 			{
-				c.setFaceUp(true);
-			}
-			else
-			{
-				c.setFaceUp(false);
-			}
-
-			p.addCardToHand (c);
-
-			p = p.getLeftOpp();
-		}
-
-		int cheatlevel = m_go.getCheatLevel();
-
-		for (; i < m_deck.getNumCards(); i++) 
-		{
-			Card c = m_deck.getCard(i);
-
-			// MWUAHAHAHA
-			if (cheatlevel > 0) 
-			{
-				if (c.getID() == Card.ID_RED_0_HD
-					|| c.getID() == Card.ID_RED_2_GLASNOST
-					|| c.getID() == Card.ID_RED_5_MAGIC
-					|| c.getID() == Card.ID_RED_D_SPREADER
-					|| c.getID() == Card.ID_YELLOW_69
-					|| c.getID() == Card.ID_GREEN_D_SPREADER
-					|| c.getID() == Card.ID_WILD_MYSTERY
-					|| c.getID() == Card.ID_GREEN_3_AIDS
-					|| c.getID() == Card.ID_WILD_DB
-					|| c.getID() == Card.ID_BLUE_2_SHIELD
-					|| c.getID() == Card.ID_GREEN_4_IRISH
-					|| c.getID() == Card.ID_WILD_DRAWFOUR
-					) 
+				p = this.m_players[i];
+				int[] hCards = hands[i];
+				for (int j = 0; j < hCards.length; j++)
 				{
-					c.setFaceUp(true);
-					c = ((m_players[SEAT_SOUTH - 1]).getHand()).swapCard(c);
-					c.setFaceUp(false);
-					cheatlevel--;
+					for (int k = 0; k < m_deck.getNumCards(); k++)
+					{
+						Card c = m_deck.getCard(k);
+						if ((c.getHand() == null) && (c.getID() == hands[i][j]))
+						{
+							if (p.getSeat() == SEAT_SOUTH)
+							{
+								c.setFaceUp(true);
+							}
+							else
+							{
+								c.setFaceUp(false);
+							}
+							p.addCardToHand(c);
+							break;
+						}
+					}
 				}
 			}
-
-			m_drawPile.addCard(c);
+			
+			for (i = 0; i < m_deck.getNumCards(); i++) 
+			{
+				Card c = m_deck.getCard(i);
+				if (c.getHand() == null)
+				{
+					m_drawPile.addCard(c);
+				}
+			}
+		}
+		else
+		{
+			for (i = 0; i < 4 * m_numCardsToDeal; i++) 
+			{
+				Card c = m_deck.getCard(i);
+	
+				if (p.getSeat() == SEAT_SOUTH)
+				{
+					c.setFaceUp(true);
+				}
+				else
+				{
+					c.setFaceUp(false);
+				}
+	
+				p.addCardToHand (c);
+	
+				p = p.getLeftOpp();
+			}
+		
+			int cheatlevel = m_go.getCheatLevel();
+	
+			for (; i < m_deck.getNumCards(); i++) 
+			{
+				Card c = m_deck.getCard(i);
+	
+				// MWUAHAHAHA
+				if (cheatlevel > 0) 
+				{
+					if (c.getID() == Card.ID_RED_0_HD
+						|| c.getID() == Card.ID_RED_2_GLASNOST
+						|| c.getID() == Card.ID_RED_5_MAGIC
+						|| c.getID() == Card.ID_RED_D_SPREADER
+						|| c.getID() == Card.ID_YELLOW_69
+						|| c.getID() == Card.ID_GREEN_D_SPREADER
+						|| c.getID() == Card.ID_WILD_MYSTERY
+						|| c.getID() == Card.ID_GREEN_3_AIDS
+						|| c.getID() == Card.ID_WILD_DB
+						|| c.getID() == Card.ID_BLUE_2_SHIELD
+						|| c.getID() == Card.ID_GREEN_4_IRISH
+						|| c.getID() == Card.ID_WILD_DRAWFOUR
+						) 
+					{
+						c.setFaceUp(true);
+						c = ((m_players[SEAT_SOUTH - 1]).getHand()).swapCard(c);
+						c.setFaceUp(false);
+						cheatlevel--;
+					}
+				}
+	
+				m_drawPile.addCard(c);
+			}
 		}
 		
 		for (i = 0; i < 4; i++) 
@@ -568,15 +629,6 @@ public class Game extends Thread {
 	private void postDealHands ()
 	{
 
-		for (int i = 0; i < 4; i++) 
-		{
-			Hand h = (m_players[i]).getHand();
-			if (checkForAllBastardCards(h)) 
-			{
-				gotAllBastardCards (m_players[i]);
-				return;
-			}
-		}
 		do 
 		{
 			// FIXME!!! the dealer is supposed to eat penalties...
@@ -588,12 +640,24 @@ public class Game extends Thread {
 			}
 		} while (m_currColor == Card.COLOR_WILD);
 
-		redrawTable();
-
 		m_startPlayer = m_dealer.getLeftOpp();
 		m_numCardsPlayed = 0;
 
 		m_currPlayer = m_startPlayer;
+
+		redrawTable();
+
+		for (int i = 0; i < 4; i++) 
+		{
+			Hand h = (m_players[i]).getHand();
+			if (checkForAllBastardCards(h)) 
+			{
+				redrawTable ();
+				gotAllBastardCards (m_players[i]);
+				finishRound(m_players[i]);
+			}
+		}
+
 		
 		mainLoop ();
 	}
@@ -845,14 +909,15 @@ public class Game extends Thread {
 		for (int i = 0; i < 4; i++) 
 		{
 			Hand h = (m_players[i]).getHand();
-			
+
+			boolean hasAllBastardCards = false;
 			if (checkForAllBastardCards(h)) {
 				gotAllBastardCards (m_players[i]);
-				return false;
+				hasAllBastardCards = true;
 			}
 
 			// check for a winner
-			if (h.getNumCards() == 0) 
+			if (hasAllBastardCards || (h.getNumCards() == 0)) 
 			{
 				if (m_penalty.getType() == Penalty.PENTYPE_NONE) 
 				{
@@ -1104,11 +1169,21 @@ public class Game extends Thread {
 		int[] newscore = new int[4];
 		int i;
 		
+		
 		int maxscore = 0;
 		for (i = 0; i < 4; i++) 
 		{
 			Hand h = (m_players[i]).getHand();
-			newscore[i] = h.calculateValue(true);
+
+			if (checkForAllBastardCards(h))
+			{
+				newscore[i] = 0;
+			}
+			else
+			{
+				newscore[i] = h.calculateValue(true);
+			}
+
 			if (newscore[i] > maxscore) 
 			{
 				maxscore = newscore[i];
@@ -1120,12 +1195,21 @@ public class Game extends Thread {
 		for (i = 0; i < 4; i++) 
 		{
 			Hand h = (m_players[i]).getHand();
-			for (int j = 0; j < h.getNumCards(); j++) 
+			if (checkForAllBastardCards(h))
 			{
-				Card c = h.getCard(j);
-				if (c.getID() == Card.ID_YELLOW_0_SHITTER) 
+				// unless he's got all 4 bastard cards, in which case, he 
+				// gets 0 points
+			}
+			else
+			{
+				for (int j = 0; j < h.getNumCards(); j++) 
 				{
-					newscore[i] = maxscore;
+					Card c = h.getCard(j);
+	
+					if (c.getID() == Card.ID_YELLOW_0_SHITTER) 
+					{
+						newscore[i] = maxscore;
+					}
 				}
 			}
 
@@ -1919,6 +2003,7 @@ public class Game extends Thread {
 			else
 			{
 				notEnoughCards = true;
+				break;
 			}
 		}
 		m_forceDrawing = false;

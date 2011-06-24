@@ -34,6 +34,11 @@ FEATURES
  
   - continue improving AI for computer players
 
+Possible rules issues:
+  - Quitter/Retaliation for 1000 points, or Quitter/Retaliation/Big Brother?  The former seems to be more commonly quoted
+  - stacking Draw-2?
+  - using Retaliation against Draw 2s?
+  - dealer eating penalties on first face-up card
    
 ----------------------------------------------------------------------
 Done:

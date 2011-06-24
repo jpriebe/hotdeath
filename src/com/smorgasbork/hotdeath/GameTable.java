@@ -1341,7 +1341,14 @@ public class GameTable extends View
 		
 		m_imageIDLookup.put (Card.ID_RED_0_HD, R.drawable.card_red_0_hd);
 		m_imageLookup.put (Card.ID_RED_0_HD, BitmapFactory.decodeResource(res, R.drawable.card_red_0_hd, opt));
-		m_cardHelpLookup.put (Card.ID_RED_0_HD, R.string.cardhelp_red_0_hd);
+        if (m_go.getFamilyFriendly())
+		{
+			m_cardHelpLookup.put (Card.ID_RED_0_HD, R.string.cardhelp_red_0_hd_ff);
+		}
+		else
+		{
+			m_cardHelpLookup.put (Card.ID_RED_0_HD, R.string.cardhelp_red_0_hd);
+		}
         m_cardLookup.put (Card.ID_RED_0_HD, new Card(-1, Card.COLOR_RED, 0, Card.ID_RED_0_HD, 0, 0.5));
 
 		m_imageIDLookup.put (Card.ID_RED_2_GLASNOST, R.drawable.card_red_2_glasnost);

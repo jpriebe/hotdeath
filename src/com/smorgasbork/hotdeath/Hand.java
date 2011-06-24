@@ -318,16 +318,15 @@ public class Hand {
 		}
 
 		boolean bFullMonty = false;
-		if ((cFuckYou != null) && (cShitter != null) && (cQuitter != null)) 
+		if ((cFuckYou != null) && (cQuitter != null)) 
 		{
 			bFullMonty = true;
 			total = 1000;
 
-			// give the cards a value of 333 so that computer players will
+			// give the cards a value of 500 so that computer players will
 			// want to unload the cards ASAP
-			cFuckYou.setCurrentValue(333);
-			cShitter.setCurrentValue(333);
-			cQuitter.setCurrentValue(333);
+			cFuckYou.setCurrentValue(500);
+			cQuitter.setCurrentValue(500);
 		}
 		else 
 		{

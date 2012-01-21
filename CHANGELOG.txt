@@ -73,3 +73,14 @@ Version 0.9.1				2011-05-02
  
  - improved card docs so that all bastard cards' help contains the bastard card
    information 
+   
+Version 1.0.3                2012-01-21
+
+ - enhancement: allow user to fast forward when human player is ejected
+
+ - bugfix: issue #2 and issue #7
+   System lets you draw a card before defending against an attack card
+  
+ - bugfix: issue #4
+   no longer allow R-S to be played on S or D-S, nor S and D-S on R-S
+    

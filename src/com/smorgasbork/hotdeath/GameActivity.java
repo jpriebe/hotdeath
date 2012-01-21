@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -18,6 +19,9 @@ import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.smorgasbork.hotdeath.R;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.*;
+import android.widget.Button;
 
 public class GameActivity extends Activity 
 {
@@ -31,6 +35,8 @@ public class GameActivity extends Activity
 	
 	private Dialog m_dlgCardCatalog = null;
 	private Dialog m_dlgCardHelp = null;
+	
+	private Button m_btnFastForward = null;
 	
 	private GameTable m_gt;
 	private Game m_game;
@@ -49,6 +55,11 @@ public class GameActivity extends Activity
 	public Game getGame ()
 	{
 		return m_game;
+	}
+
+	public Button getBtnFastForward ()
+	{
+		return m_btnFastForward;
 	}
 	
 	@Override
@@ -85,8 +96,32 @@ public class GameActivity extends Activity
 	    }
 	    
 	    m_gt = new GameTable(this, m_game, m_go);
-		
-	    setContentView(m_gt);
+	    m_gt.setId(1);
+	    
+	    RelativeLayout l = new RelativeLayout (this);
+	    
+	    m_btnFastForward = new Button (this);
+	    m_btnFastForward.setText(getString(R.string.lbl_fast_forward));
+	    m_btnFastForward.setId(2);
+	    m_btnFastForward.setVisibility(View.INVISIBLE);
+	    m_btnFastForward.setOnClickListener (new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				m_btnFastForward.setVisibility (View.INVISIBLE);
+				m_game.setFastForward (true);
+			}
+		});
+	    
+	    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+	    lp.addRule(RelativeLayout.ALIGN_BOTTOM, m_gt.getId());
+	    lp.addRule(RelativeLayout.CENTER_HORIZONTAL, m_gt.getId());
+	    
+	    l.addView(m_gt);
+	    l.addView(m_btnFastForward, lp);
+	    
+	    setContentView (l);
+	    
 	    m_gt.invalidate(); // force view to be laid out before we start the game
 	    m_gt.requestFocus();
 	    
@@ -194,7 +229,7 @@ public class GameActivity extends Activity
 	{
 		if (m_game.getCurrPlayer() instanceof HumanPlayer)
 		{
-			if (m_game.getCurrPlayerDrawn())
+			if (m_game.getCurrPlayerUnderAttack() || m_game.getCurrPlayerDrawn())
 			{
 				menu.getItem(0).setEnabled(false);
 				menu.getItem(1).setEnabled(true);				

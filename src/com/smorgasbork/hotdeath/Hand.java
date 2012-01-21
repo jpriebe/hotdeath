@@ -491,7 +491,18 @@ public class Hand {
 		// Step 10.  You now have a good "total" with which to calculate the shitter
 		// penalty.  If another players's hand is higher than "total" then set
 		// "total = [other player's hand]"
-		// THIS IS DONE IN Game.cpp BY NECESSITY
+		
+		// When the round is over, the game object applies the shitter penalty, since the game
+		// has knowledge of all final scores and can apply the highest one.
+		// However, for mid-game score estimates, we can apply our artificial value for
+		// the shitter right here.
+		if (cShitter != null && !isfinal)
+		{
+			if (total < cShitter.getCurrentValue())
+			{
+				total = cShitter.getCurrentValue ();
+			}
+		}
 
 		// Step 11.  Did the player win this hand?  If not, set "total += (10 * number
 		// of virus infections)".

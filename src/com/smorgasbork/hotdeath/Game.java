@@ -42,6 +42,8 @@ public class Game extends Thread {
 	private int         m_currColor;
 	private int			m_cardsPlayed;
 	private boolean     m_forceDrawing = false;
+	
+	private boolean     m_fastForward = false;
 
 	private Penalty     m_penalty;
 	
@@ -52,6 +54,20 @@ public class Game extends Thread {
 	private boolean m_resumingSavedGame = false;
 	
 	private JSONObject m_snapshot = null;
+	
+	public void setFastForward (boolean ff)
+	{
+		Log.d("HDU", "setFastForward (" 
+				+ (ff ? "true"  : "false")
+				+ ")");
+
+		m_fastForward = ff;
+	}
+	
+	public boolean getFastForward ()
+	{
+		return m_fastForward;
+	}
 
 	public int getWinner ()
 	{
@@ -82,6 +98,11 @@ public class Game extends Thread {
     {
         return m_currPlayer;
     }
+	
+	public boolean getCurrPlayerUnderAttack ()
+	{
+		return m_penalty.getType() != Penalty.PENTYPE_NONE;
+	}
 	
 	public boolean getCurrPlayerDrawn()
 	{
@@ -395,26 +416,63 @@ public class Game extends Thread {
 		promptUser(msg);
 		
 		// use this mechanism to set up scenarios for testing edge cases
+		// don't release with this set to true!!!
 		boolean debugDeal = false;
 		if (debugDeal)
 		{
 			int[][] hands = {
-					/* All four bastard cards...
-					{Card.ID_BLUE_0_FUCKYOU, Card.ID_GREEN_0_QUITTER, Card.ID_YELLOW_0_SHITTER, Card.ID_RED_0_HD, Card.ID_BLUE_1, Card.ID_BLUE_2, Card.ID_BLUE_3},
-					{Card.ID_GREEN_1, Card.ID_GREEN_2, Card.ID_GREEN_3, Card.ID_GREEN_4, Card.ID_GREEN_5, Card.ID_GREEN_6, Card.ID_GREEN_7}, 
-					{Card.ID_RED_1, Card.ID_RED_2, Card.ID_RED_3, Card.ID_RED_4, Card.ID_RED_5, Card.ID_RED_6, Card.ID_RED_7}, 
-					{Card.ID_YELLOW_1, Card.ID_YELLOW_2, Card.ID_YELLOW_3, Card.ID_YELLOW_4, Card.ID_YELLOW_5, Card.ID_YELLOW_6, Card.ID_YELLOW_7}
-					*/ 
+				/* All four bastard cards...
+				{Card.ID_BLUE_0_FUCKYOU, Card.ID_GREEN_0_QUITTER, Card.ID_YELLOW_0_SHITTER, Card.ID_RED_0_HD, Card.ID_BLUE_1, Card.ID_BLUE_2, Card.ID_BLUE_3},
+				{Card.ID_GREEN_1, Card.ID_GREEN_2, Card.ID_GREEN_3, Card.ID_GREEN_4, Card.ID_GREEN_5, Card.ID_GREEN_6, Card.ID_GREEN_7}, 
+				{Card.ID_RED_1, Card.ID_RED_2, Card.ID_RED_3, Card.ID_RED_4, Card.ID_RED_5, Card.ID_RED_6, Card.ID_RED_7}, 
+				{Card.ID_YELLOW_1, Card.ID_YELLOW_2, Card.ID_YELLOW_3, Card.ID_YELLOW_4, Card.ID_YELLOW_5, Card.ID_YELLOW_6, Card.ID_YELLOW_7}
+				*/ 
 
-					// this makes a mystery on a 69 highly likely
-					{Card.ID_YELLOW_6, Card.ID_WILD_MYSTERY},
-					{Card.ID_YELLOW_1, Card.ID_YELLOW_2}, 
-					{Card.ID_YELLOW_3, Card.ID_YELLOW_4, 
-							Card.ID_RED_1, Card.ID_RED_2, Card.ID_RED_3, Card.ID_RED_4, Card.ID_RED_5, Card.ID_RED_6, Card.ID_RED_7, Card.ID_RED_8, Card.ID_RED_9, Card.ID_RED_D, Card.ID_RED_R, Card.ID_RED_S, Card.ID_RED_S_DOUBLE, Card.ID_RED_R_SKIP,
-							Card.ID_GREEN_1, Card.ID_GREEN_2, Card.ID_GREEN_3, Card.ID_GREEN_4, Card.ID_GREEN_5, Card.ID_GREEN_6, Card.ID_GREEN_7, Card.ID_GREEN_8, Card.ID_GREEN_9, Card.ID_GREEN_D, Card.ID_GREEN_R, Card.ID_GREEN_S, Card.ID_GREEN_S_DOUBLE, Card.ID_GREEN_R_SKIP,
-							Card.ID_BLUE_1, Card.ID_BLUE_2, Card.ID_BLUE_3, Card.ID_BLUE_4, Card.ID_BLUE_5, Card.ID_BLUE_6, Card.ID_BLUE_7, Card.ID_BLUE_8, Card.ID_BLUE_9, Card.ID_BLUE_D, Card.ID_BLUE_R, Card.ID_BLUE_S, Card.ID_BLUE_S_DOUBLE, Card.ID_BLUE_R_SKIP
-					},
-					{Card.ID_YELLOW_5, Card.ID_YELLOW_69}
+				// this makes a mystery on a 69 highly likely
+				{Card.ID_YELLOW_6, Card.ID_WILD_MYSTERY, Card.ID_YELLOW_0_SHITTER},
+				{Card.ID_YELLOW_3, Card.ID_YELLOW_4, 
+						Card.ID_RED_1, Card.ID_RED_2, Card.ID_RED_3, Card.ID_RED_4, Card.ID_RED_5, Card.ID_RED_6, Card.ID_RED_7, Card.ID_RED_8, Card.ID_RED_D, Card.ID_RED_R, Card.ID_RED_S, Card.ID_RED_S_DOUBLE, Card.ID_RED_R_SKIP,
+						Card.ID_GREEN_1, Card.ID_GREEN_2, Card.ID_GREEN_3, Card.ID_GREEN_4, Card.ID_GREEN_5, Card.ID_GREEN_6, Card.ID_GREEN_7, Card.ID_GREEN_8, Card.ID_GREEN_9, Card.ID_GREEN_D, Card.ID_GREEN_R, Card.ID_GREEN_S, Card.ID_GREEN_S_DOUBLE, Card.ID_GREEN_R_SKIP,
+						Card.ID_BLUE_1, Card.ID_BLUE_2, Card.ID_BLUE_3, Card.ID_BLUE_4, Card.ID_BLUE_5, Card.ID_BLUE_6, Card.ID_BLUE_7, Card.ID_BLUE_8, Card.ID_BLUE_9, Card.ID_BLUE_D, Card.ID_BLUE_R, Card.ID_BLUE_S, Card.ID_BLUE_S_DOUBLE, Card.ID_BLUE_R_SKIP
+				},
+				{Card.ID_YELLOW_1, Card.ID_YELLOW_2}, 
+				{Card.ID_YELLOW_69, Card.ID_RED_9}
+				
+				/*
+				// get the south player ejected
+				{Card.ID_YELLOW_3, Card.ID_YELLOW_4, 
+					Card.ID_RED_1, Card.ID_RED_2, Card.ID_RED_3, Card.ID_RED_4, Card.ID_RED_5, Card.ID_RED_6, Card.ID_RED_7, Card.ID_RED_8, Card.ID_RED_9, Card.ID_RED_D, Card.ID_RED_R, Card.ID_RED_S, Card.ID_RED_S_DOUBLE, Card.ID_RED_R_SKIP,
+					Card.ID_BLUE_1, Card.ID_BLUE_2, Card.ID_BLUE_3, Card.ID_BLUE_4, Card.ID_BLUE_5, Card.ID_BLUE_6, Card.ID_BLUE_7, Card.ID_BLUE_8, Card.ID_BLUE_9, Card.ID_BLUE_D, Card.ID_BLUE_R, Card.ID_BLUE_S, Card.ID_BLUE_S_DOUBLE, Card.ID_BLUE_R_SKIP
+				},
+				{Card.ID_YELLOW_1, Card.ID_YELLOW_2}, 
+				{Card.ID_GREEN_1, Card.ID_GREEN_2, Card.ID_GREEN_3, Card.ID_GREEN_4, Card.ID_GREEN_5, Card.ID_GREEN_6, Card.ID_GREEN_7, Card.ID_GREEN_8, Card.ID_GREEN_9, Card.ID_GREEN_D, Card.ID_GREEN_R, Card.ID_GREEN_S, Card.ID_GREEN_S_DOUBLE, Card.ID_GREEN_R_SKIP},
+				{Card.ID_YELLOW_1_MAD, Card.ID_GREEN_0_QUITTER}
+				*/
+				
+				/*
+				// get East to stack a Draw Four on a Hot Death so we can see what happens
+				// with the Magic 5
+				{Card.ID_RED_5_MAGIC, Card.ID_RED_1, Card.ID_RED_2},
+				{Card.ID_GREEN_3, Card.ID_GREEN_4},
+				{Card.ID_WILD_HD, Card.ID_BLUE_5, Card.ID_BLUE_6},
+				{Card.ID_WILD_DRAWFOUR, Card.ID_RED_7, Card.ID_RED_8}
+				*/
+				
+				/*
+				// put south player under attack
+				{Card.ID_RED_1, Card.ID_RED_2, Card.ID_WILD_DRAWFOUR},
+				{Card.ID_GREEN_3, Card.ID_GREEN_4, Card.ID_WILD_DRAWFOUR},
+				{Card.ID_BLUE_5, Card.ID_BLUE_6, Card.ID_WILD_DRAWFOUR},
+				{Card.ID_RED_7, Card.ID_RED_8, Card.ID_WILD_DRAWFOUR}
+				*/
+
+				/*
+				// stick player one with 69 and the shitter
+				{Card.ID_YELLOW_69, Card.ID_YELLOW_0_SHITTER, Card.ID_WILD_DRAWFOUR, Card.ID_WILD_DRAWFOUR},
+				{Card.ID_RED_1},
+				{Card.ID_RED_2},
+				{Card.ID_GREEN_3_AIDS, Card.ID_BLUE_2_SHIELD, Card.ID_GREEN_4_IRISH}
+				*/
 			};
 			
 			for (i = 0; i < 4; i++)
@@ -766,7 +824,7 @@ public class Game extends Thread {
 				m_prevCard = m_currCard;
 				m_currCard = m_currPlayer.getPlayingCard();
 				m_currPlayer.getHand().removeCard(m_currCard);
-				
+					
 				logCardPlay(m_currPlayer, m_currCard);
 
 				m_cardsPlayed++;
@@ -1034,9 +1092,9 @@ public class Game extends Thread {
 		if ((value == Card.VAL_D) && (cvalue == Card.VAL_D_SPREAD)) return true;
 		if ((value == Card.VAL_D_SPREAD) && (cvalue == Card.VAL_D)) return true;
 		if ((value == Card.VAL_R) && (cvalue == Card.VAL_R_SKIP)) return true;
-		if ((value == Card.VAL_R_SKIP) && ((cvalue == Card.VAL_R) || (cvalue == Card.VAL_S) || (cvalue == Card.VAL_S_DOUBLE))) return true;
-		if ((value == Card.VAL_S) && ((cvalue == Card.VAL_S_DOUBLE) || (cvalue == Card.VAL_R_SKIP))) return true;
-		if ((value == Card.VAL_S_DOUBLE) && ((cvalue == Card.VAL_S) || (cvalue == Card.VAL_R_SKIP))) return true;
+		if ((value == Card.VAL_R_SKIP) && (cvalue == Card.VAL_R)) return true;
+		if ((value == Card.VAL_S) && (cvalue == Card.VAL_S_DOUBLE)) return true;
+		if ((value == Card.VAL_S_DOUBLE) && (cvalue == Card.VAL_S)) return true;
 
 		if (m_go.getStandardRules()) 
 		{
@@ -1059,6 +1117,9 @@ public class Game extends Thread {
 
 	public void finishRound(Player p)
 	{
+		m_fastForward = false;
+		showFastForwardButton(false);
+
 		m_dealer = p;
 
 		calculateScore(p);
@@ -1288,6 +1349,16 @@ public class Game extends Thread {
 			}
 		});
 	}
+	
+	private void showFastForwardButton (final boolean show)
+	{
+		m_ga.runOnUiThread(new Runnable () {
+			public void run ()
+			{
+				 m_gt.showFastForwardButton(show);
+			}
+		});
+	}
 
 	public void promptForNumCardsToDeal()
 	{
@@ -1338,6 +1409,11 @@ public class Game extends Thread {
 
 	void promptUser(final String msg, boolean wait)
 	{
+		if (m_fastForward)
+		{
+			return;
+		}
+
 		m_ga.runOnUiThread(new Runnable () {
 			public void run ()
 			{
@@ -1899,6 +1975,11 @@ public class Game extends Thread {
 			redrawTable();
 			promptUser (msg);
 
+			if (pVictim == m_players[SEAT_SOUTH - 1])
+			{
+				showFastForwardButton (true);
+			}
+
 			if (pVictim2 != null) 
 			{
 				pVictim2.setActive(false);
@@ -1906,6 +1987,11 @@ public class Game extends Thread {
 				msg = String.format (getString(R.string.msg_player_ejected), seatToString (pVictim2.getSeat()));
 				redrawTable();
 				promptUser (msg);
+
+				if (pVictim2 == m_players[SEAT_SOUTH - 1])
+				{
+					showFastForwardButton (true);
+				}
 			}
 
 			if ((m_currPlayer == pVictim) || (m_currPlayer == pVictim2)) 
@@ -1938,13 +2024,18 @@ public class Game extends Thread {
 	// gets the pause delay in milliseconds
 	public int getDelay ()
 	{
-		int delay = m_go.getPauseLength();
+		if (m_fastForward)
+		{
+			return 0;
+		}
 		
 		if (!m_players[SEAT_SOUTH - 1].getActive())
 		{
-			return 700;
+			return 250;
 		}
 
+		int delay = m_go.getPauseLength();
+		
 		switch (delay)
 		{
 		case 0:
@@ -1963,6 +2054,11 @@ public class Game extends Thread {
 	public void waitABit()
 	{
 		int delay = this.getDelay();
+		
+		if (delay == 0)
+		{
+			return;
+		}
 		
 		try
 		{

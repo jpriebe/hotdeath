@@ -27,14 +27,13 @@ public class GameTable extends View
 	private int[] m_cardoffset;
 	private int[] m_currentDrag;
 	
-	// FIXME -- make resolution independent
 	private int m_maxCardsDisplay = 7;
 	
 	private Matrix m_drawMatrix;
 	
 	private Point m_ptDiscardPile;
 	private Point m_ptDrawPile;
-	
+		
 	private Point[] m_ptSeat;
 	private Point[] m_ptEmoticon;
 	private Point[] m_ptPlayerIndicator;
@@ -216,7 +215,9 @@ public class GameTable extends View
 		
 		m_emoticonHeight = m_bmpEmoticonAggressor.getHeight();
 		m_emoticonWidth = m_bmpEmoticonAggressor.getWidth();
+		
 	}
+	
 	
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) 
@@ -340,6 +341,19 @@ public class GameTable extends View
 		}
 		
 		m_waitingToStartGame = true;
+	}
+	
+	public void showFastForwardButton (boolean show)
+	{
+		GameActivity a = (GameActivity)(getContext());
+		if (show)
+		{
+			a.getBtnFastForward().setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			a.getBtnFastForward().setVisibility(View.INVISIBLE);
+		}
 	}
 	
 	private Runnable m_touchAndHoldTask = new Runnable() 
@@ -765,6 +779,38 @@ public class GameTable extends View
 				
 		int x = 0;
 		int y = 0;
+
+		// draw the hands
+
+		for (i = 0; i < 4; i++) 
+		{
+			Player p = m_game.getPlayer(i);
+
+
+			// don't draw ejected players' cards
+			
+			if (p.getActive()) 
+			{
+				RedrawHand (canvas, i + 1);
+			}
+		}
+		
+		Player p = m_game.getCurrPlayer();
+		if (p != null)
+		{
+			Point pt = m_ptPlayerIndicator[p.getSeat() - 1];
+	
+			m_drawMatrix.reset();
+			m_drawMatrix.setScale(1, 1);
+			m_drawMatrix.setTranslate(pt.x, pt.y);
+			
+			canvas.drawBitmap(m_bmpPlayerIndicator[curr_color - 1][p.getSeat() - 1], m_drawMatrix, null);
+		}		
+		
+		if (m_game.getFastForward())
+		{
+			return;
+		}
 		
 		// draw the discard pile
 		
@@ -780,30 +826,6 @@ public class GameTable extends View
 				skip = 32;
 			}
 		}
-		
-		
-		/* this method looks kind of stupid 
-		if (pile != null)
-		{
-			int start = (numCardsInPlay > 16) ? numCardsInPlay - 16 : 0;
-			for (i = start; i < numCardsInPlay; i++)
-			{
-				Card c = pile.GetCard(i);
-				if (c != null) 
-				{
-					// FIXME -- make resolution independent
-					x = m_ptDiscardPile.x + i * 2;
-					y = m_ptDiscardPile.y + i * 2;
-					c.SetFaceUp(true);
-					c.SetX(x);
-					c.SetY(y);
-
-					this.DrawCard (canvas, c, x, y, true);
-				}
-				
-			}
-		}
-		*/
 		
 		if (pile != null)
 		{			
@@ -838,7 +860,6 @@ public class GameTable extends View
 
 		if (pile != null)
 		{
-			// FIXME -- make resolution independent!
 			x = m_ptDrawPile.x;
 			y = m_ptDrawPile.y;
 			int numCardsInPile = pile.getNumCards();
@@ -862,32 +883,7 @@ public class GameTable extends View
 		
 		m_drawPileBoundingRect = new Rect(m_ptDrawPile.x, m_ptDrawPile.y, x + m_cardWidth, y + m_cardHeight);
 		
-		// draw the hands
 
-		for (i = 0; i < 4; i++) 
-		{
-			Player p = m_game.getPlayer(i);
-
-
-			// don't draw ejected players' cards
-			
-			if (p.getActive()) 
-			{
-				RedrawHand (canvas, i + 1);
-			}
-		}
-		
-		Player p = m_game.getCurrPlayer();
-		if (p != null)
-		{
-			Point pt = m_ptPlayerIndicator[p.getSeat() - 1];
-	
-			m_drawMatrix.reset();
-			m_drawMatrix.setScale(1, 1);
-			m_drawMatrix.setTranslate(pt.x, pt.y);
-			
-			canvas.drawBitmap(m_bmpPlayerIndicator[curr_color - 1][p.getSeat() - 1], m_drawMatrix, null);
-		}
 		
 		if (m_game.getWinner() != 0)
 		{
@@ -1728,7 +1724,7 @@ public class GameTable extends View
 	{
 		// not sure exactly how long it takes to fade out a Toast, but we're going to
 		// show the toast for a duration that's a little lower than the game delay
-		// to accomodate some fade out time.
+		// to accommodate some fade out time.
 		if (m_toast == null)
 		{
 			m_toast = Toast.makeText(this.getContext(), msg, m_game.getDelay() - 500);

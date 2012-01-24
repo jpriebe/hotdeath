@@ -1,9 +1,3 @@
-BUGS
-
-- when you are victimized, and you have a defensive card, you only have two choices --
-  play the defensive card or draw; you shouldn't be able to draw -- you should have
-  to pass, take the penalty, and then you can draw if you want to.
-
 FEATURES
 
 - artwork:
@@ -18,9 +12,6 @@ FEATURES
  
   - pause mechanism for novice players?  tap to advance after each card played...
 
-  - when player is ejected, speed up the game even more (maybe even stop updates
-    altogether or allow player to "jump" to the end of the game)
- 
   - if a matching card is played, you get a toast saying "North threw another green 5"; otherwise, it's a bit hard to see what happened
  
   - continue improving AI for computer players

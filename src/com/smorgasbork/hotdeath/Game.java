@@ -417,7 +417,7 @@ public class Game extends Thread {
 		
 		// use this mechanism to set up scenarios for testing edge cases
 		// don't release with this set to true!!!
-		boolean debugDeal = true;
+		boolean debugDeal = false;
 		if (debugDeal)
 		{
 			int[][] hands = {

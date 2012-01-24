@@ -83,4 +83,13 @@ Version 1.0.3                2012-01-21
   
  - bugfix: issue #4
    no longer allow R-S to be played on S or D-S, nor S and D-S on R-S
+   
+Version 1.0.4                2012-01-24
+
+ - left debug flag in release version (d'oh)
+ 
+Version 1.0.5                2012-01-24
+
+ - fixed version string in strings.xml - could this have been a more 
+   sloppy release???
     

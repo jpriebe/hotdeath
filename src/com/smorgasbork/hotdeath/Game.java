@@ -417,7 +417,7 @@ public class Game extends Thread {
 		
 		// use this mechanism to set up scenarios for testing edge cases
 		// don't release with this set to true!!!
-		boolean debugDeal = false;
+		boolean debugDeal = true;
 		if (debugDeal)
 		{
 			int[][] hands = {
@@ -428,6 +428,7 @@ public class Game extends Thread {
 				{Card.ID_YELLOW_1, Card.ID_YELLOW_2, Card.ID_YELLOW_3, Card.ID_YELLOW_4, Card.ID_YELLOW_5, Card.ID_YELLOW_6, Card.ID_YELLOW_7}
 				*/ 
 
+				/*
 				// this makes a mystery on a 69 highly likely
 				{Card.ID_YELLOW_6, Card.ID_WILD_MYSTERY, Card.ID_YELLOW_0_SHITTER},
 				{Card.ID_YELLOW_3, Card.ID_YELLOW_4, 
@@ -436,7 +437,8 @@ public class Game extends Thread {
 						Card.ID_BLUE_1, Card.ID_BLUE_2, Card.ID_BLUE_3, Card.ID_BLUE_4, Card.ID_BLUE_5, Card.ID_BLUE_6, Card.ID_BLUE_7, Card.ID_BLUE_8, Card.ID_BLUE_9, Card.ID_BLUE_D, Card.ID_BLUE_R, Card.ID_BLUE_S, Card.ID_BLUE_S_DOUBLE, Card.ID_BLUE_R_SKIP
 				},
 				{Card.ID_YELLOW_1, Card.ID_YELLOW_2}, 
-				{Card.ID_YELLOW_69, Card.ID_RED_9}
+				{Card.ID_YELLOW_69, Card.ID_RED_9
+				 */
 				
 				/*
 				// get the south player ejected
@@ -473,6 +475,12 @@ public class Game extends Thread {
 				{Card.ID_RED_2},
 				{Card.ID_GREEN_3_AIDS, Card.ID_BLUE_2_SHIELD, Card.ID_GREEN_4_IRISH}
 				*/
+				
+				// want a retaliation thrown on a delayed blast
+				{Card.ID_BLUE_0_FUCKYOU, Card.ID_BLUE_1, Card.ID_BLUE_2, Card.ID_BLUE_3},
+				{Card.ID_RED_1, Card.ID_RED_2, Card.ID_RED_3, Card.ID_RED_3},
+				{Card.ID_GREEN_1, Card.ID_GREEN_2, Card.ID_WILD_DB},
+				{Card.ID_YELLOW_1, Card.ID_YELLOW_2, Card.ID_YELLOW_3}
 			};
 			
 			for (i = 0; i < 4; i++)

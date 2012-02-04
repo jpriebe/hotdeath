@@ -218,6 +218,12 @@ public class GameTable extends View
 		
 	}
 	
+	public void shutdown ()
+	{
+		m_game = null;
+		m_go = null;
+	}
+	
 	
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) 

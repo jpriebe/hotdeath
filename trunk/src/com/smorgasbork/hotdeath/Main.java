@@ -50,7 +50,19 @@ public class Main extends Activity implements OnClickListener
 	
 				text = (TextView) d.findViewById(R.id.text);
 				text.setMovementMethod(ScrollingMovementMethod.getInstance());
-				text.setText(this.getString(R.string.dlg_about_text));
+				
+				try
+				{
+					String app_ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+					String str_about = this.getString(R.string.dlg_about_text);
+					
+					str_about = String.format(str_about, app_ver);
+					text.setText(str_about);
+				}
+				catch (Exception e)
+				{
+					
+				}
 	
 				break;
 				

@@ -164,7 +164,21 @@ public class GameActivity extends Activity
     public void onConfigurationChanged(Configuration newConfig) { 
       //ignore orientation change  (use in conjunction with settings in the manifest)
       super.onConfigurationChanged(newConfig); 
-    } 
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	m_game.shutdown ();
+    	m_game = null;
+
+    	m_gt.shutdown ();
+    	m_gt = null;
+    	
+    	m_go.shutdown ();
+    	m_go = null;
+    	
+    	super.onDestroy ();
+    };
     
     public void showCardHelp ()
     {

@@ -16,6 +16,11 @@ public class GameOptions {
 	{
 		m_ga = ga;
 	}
+	
+	public void shutdown ()
+	{
+		m_ga = null;
+	}
 
 	public int getP1Skill() 
     {

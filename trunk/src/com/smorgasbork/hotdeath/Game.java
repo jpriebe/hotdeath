@@ -166,6 +166,13 @@ public class Game extends Thread {
 		}
 	}
 	
+	public void shutdown ()
+	{
+		m_go = null;
+		m_ga = null;
+		m_gt = null;
+	}
+	
 	public Game (JSONObject gamestate, GameActivity ga, GameOptions go)
 	{
 		m_go = go;
@@ -416,9 +423,8 @@ public class Game extends Thread {
 		promptUser(msg);
 		
 		// use this mechanism to set up scenarios for testing edge cases
-		// don't release with this set to true!!!
 		boolean debugDeal = false;
-		if (debugDeal)
+		if (android.os.Debug.isDebuggerConnected() && debugDeal)
 		{
 			int[][] hands = {
 				/* All four bastard cards...

@@ -167,6 +167,13 @@ public class Player {
 		m_active = a; 
 	}
 
+	public void shutdown ()
+	{
+		m_game = null;
+		m_go = null;
+		m_hand = null;
+	}
+	
 	public Player(Game g, GameOptions go)
 	{
 		m_othersVoids = new boolean[4][4];
@@ -206,9 +213,15 @@ public class Player {
 	public void resetGame()
 	{
 		m_lastScore = 0;
-		m_totalScore = 0;
 		m_virusPenalty = 0;
-
+		if (android.os.Debug.isDebuggerConnected())
+		{
+			m_totalScore = 0;
+		}
+		else
+		{
+			m_totalScore = 0;		
+		}
 		resetRound();
 	}
 

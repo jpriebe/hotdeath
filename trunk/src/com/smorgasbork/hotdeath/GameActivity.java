@@ -170,12 +170,8 @@ public class GameActivity extends Activity
     protected void onDestroy() {
     	m_game.shutdown ();
     	m_game = null;
-
-    	m_gt.shutdown ();
     	m_gt = null;
-    	
-    	m_go.shutdown ();
-    	m_go = null;
+       	m_go = null;
     	
     	super.onDestroy ();
     };

@@ -334,7 +334,7 @@ public class GameTable extends View
 		if (m_waitingToStartGame)
 		{
 			m_waitingToStartGame = false;
-			m_game.start();
+			m_game.start ();
 		}
 	}
 	
@@ -342,7 +342,7 @@ public class GameTable extends View
 	{
 		if (m_readyToStartGame)
 		{
-			m_game.start();
+			m_game.start ();
 			return;
 		}
 		

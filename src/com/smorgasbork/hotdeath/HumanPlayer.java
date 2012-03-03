@@ -80,6 +80,10 @@ public class HumanPlayer extends Player
 			{
 				
 			}
+			if (m_game.getStopping())
+			{
+				return;
+			}
 		}
 		
 		return;
@@ -100,6 +104,10 @@ public class HumanPlayer extends Player
 			catch (InterruptedException e)
 			{
 				
+			}
+			if (m_game.getStopping())
+			{
+				return 0;
 			}
 		}
 		
@@ -128,6 +136,10 @@ public class HumanPlayer extends Player
 			catch (InterruptedException e)
 			{
 				
+			}
+			if (m_game.getStopping())
+			{
+				return 0;
 			}
 		}
 		
@@ -184,6 +196,10 @@ public class HumanPlayer extends Player
 			catch (InterruptedException e)
 			{
 				
+			}
+			if (m_game.getStopping())
+			{
+				return;
 			}
 		}
 	}

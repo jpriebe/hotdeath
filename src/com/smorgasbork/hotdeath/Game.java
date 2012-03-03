@@ -9,6 +9,8 @@ import org.json.*;
 public class Game extends Thread {
 	public static final int MAX_NUM_CARDS = 216;
 	
+	private boolean m_stopping = false;
+	
 	public static final int SEAT_SOUTH = 1;
 	public static final int SEAT_WEST = 2;
 	public static final int SEAT_NORTH = 3;
@@ -54,6 +56,11 @@ public class Game extends Thread {
 	private boolean m_resumingSavedGame = false;
 	
 	private JSONObject m_snapshot = null;
+	
+	public boolean getStopping ()
+	{
+		return m_stopping;
+	}
 	
 	public void setFastForward (boolean ff)
 	{
@@ -168,6 +175,27 @@ public class Game extends Thread {
 	
 	public void shutdown ()
 	{
+		if (!m_stopping)
+		{
+			// on the first call, we'll set a flag
+			m_stopping = true;
+			Log.d("HDU", "Game thread shutdown requested...");
+			return;
+		}
+
+		// on the second call, we'll really shut down; but also be careful
+		// in case we get called more than two times...
+		Log.d("HDU", "Game thread nulling out references and exiting...");
+    	if  (m_gt != null)
+    	{
+    		m_gt.shutdown ();
+    		m_go.shutdown ();
+    		
+    		for (int i = 0; i < m_players.length; i++)
+    		{
+    			m_players[i].shutdown();
+    		}
+    	}
 		m_go = null;
 		m_ga = null;
 		m_gt = null;
@@ -427,13 +455,22 @@ public class Game extends Thread {
 		if (android.os.Debug.isDebuggerConnected() && debugDeal)
 		{
 			int[][] hands = {
-				/* All four bastard cards...
+					/*
+				// try to get draw 4s stacked with hotdeath on top, and a magic 5 to null it
+				{Card.ID_RED_5_MAGIC, Card.ID_WILD_DRAWFOUR},
+				{Card.ID_BLUE_0, Card.ID_BLUE_1, Card.ID_BLUE_2, Card.ID_WILD_DB},
+				{Card.ID_RED_3, Card.ID_RED_4, Card.ID_RED_5, Card.ID_WILD_DRAWFOUR},
+				{Card.ID_GREEN_6, Card.ID_GREEN_7, Card.ID_GREEN_8, Card.ID_WILD_HD}
+				*/
+					
+				/*
+				// All four bastard cards...
 				{Card.ID_BLUE_0_FUCKYOU, Card.ID_GREEN_0_QUITTER, Card.ID_YELLOW_0_SHITTER, Card.ID_RED_0_HD, Card.ID_BLUE_1, Card.ID_BLUE_2, Card.ID_BLUE_3},
 				{Card.ID_GREEN_1, Card.ID_GREEN_2, Card.ID_GREEN_3, Card.ID_GREEN_4, Card.ID_GREEN_5, Card.ID_GREEN_6, Card.ID_GREEN_7}, 
 				{Card.ID_RED_1, Card.ID_RED_2, Card.ID_RED_3, Card.ID_RED_4, Card.ID_RED_5, Card.ID_RED_6, Card.ID_RED_7}, 
 				{Card.ID_YELLOW_1, Card.ID_YELLOW_2, Card.ID_YELLOW_3, Card.ID_YELLOW_4, Card.ID_YELLOW_5, Card.ID_YELLOW_6, Card.ID_YELLOW_7}
-				*/ 
-
+				*/
+				
 				/*
 				// this makes a mystery on a 69 highly likely
 				{Card.ID_YELLOW_6, Card.ID_WILD_MYSTERY, Card.ID_YELLOW_0_SHITTER},
@@ -482,11 +519,13 @@ public class Game extends Thread {
 				{Card.ID_GREEN_3_AIDS, Card.ID_BLUE_2_SHIELD, Card.ID_GREEN_4_IRISH}
 				*/
 				
+				/*
 				// want a retaliation thrown on a delayed blast
 				{Card.ID_BLUE_0_FUCKYOU, Card.ID_BLUE_1, Card.ID_BLUE_2, Card.ID_BLUE_3},
 				{Card.ID_RED_1, Card.ID_RED_2, Card.ID_RED_3, Card.ID_RED_3},
 				{Card.ID_GREEN_1, Card.ID_GREEN_2, Card.ID_WILD_DB},
 				{Card.ID_YELLOW_1, Card.ID_YELLOW_2, Card.ID_YELLOW_3}
+				*/
 			};
 			
 			for (i = 0; i < 4; i++)
@@ -583,8 +622,6 @@ public class Game extends Thread {
 			Hand h = (m_players[i]).getHand();
 			sortHand(h);
 		}
-
-		postDealHands();
 	}	
 
 
@@ -691,16 +728,23 @@ public class Game extends Thread {
 		if (m_go.getStandardRules())
 		{
 			m_numCardsToDeal = 7;
-			dealHands();
 		}
-
-		m_numCardsToDeal = m_dealer.getNumCardsToDeal();
+		else
+		{
+			m_numCardsToDeal = m_dealer.getNumCardsToDeal();
+			
+			if (m_stopping)
+			{
+				return;
+			}
+		}
+		
 		dealHands();
+		postDealHands();
 	}
 	
 	private void postDealHands ()
 	{
-
 		do 
 		{
 			// FIXME!!! the dealer is supposed to eat penalties...
@@ -727,25 +771,35 @@ public class Game extends Thread {
 				redrawTable ();
 				gotAllBastardCards (m_players[i]);
 				finishRound(m_players[i]);
+				
+				return;
 			}
 		}
-
-		
-		mainLoop ();
 	}
 	
-	private void mainLoop ()
+	private void runRound ()
 	{
 		while (true)
 		{
 			m_snapshot = this.toJSON();
 			waitUntilUnpaused ();
 			
+			if (m_roundComplete)
+			{
+				// this could conceivably happen if the round ends immediately after the deal
+				return;
+			}
+			
+			if (m_stopping)
+			{
+				return;
+			}
+			
 			if (advanceRound() == false)
 			{
 				break;
 			}
-		}		
+		}
 	}
 
 	public void run ()
@@ -756,16 +810,35 @@ public class Game extends Thread {
 			if (m_roundComplete)
 			{
 				waitForNextRound ();
-			}
-			else
-			{
-				mainLoop ();
+				startRound ();
 			}
 		}
 		else
 		{
 			startGame ();
 		}
+
+		while (!m_gameOver)
+		{
+			runRound ();
+			if (m_stopping)
+			{
+				shutdown ();
+				Log.d("HDU", "exiting Game.run()...");
+				return;
+			}
+			if (!m_gameOver)
+			{
+				waitForNextRound();
+				startRound ();
+			}
+		}
+		
+		// call shutdown() once; when user backs out of the activity, shutdown() will
+		// get called for the second time, releasing all big references
+		shutdown();
+
+		Log.d("HDU", "exiting Game.run()...");
 	}
 
 	public void startGame()
@@ -829,6 +902,11 @@ public class Game extends Thread {
 		}
 		
 		m_currPlayer.startTurn();
+
+		if (m_stopping)
+		{
+			return false;
+		}
 		
 		if ((m_currPlayer.getHand()).hasValidCards(this)
 				&& !(m_currPlayer.getWantsToPass())) 
@@ -854,6 +932,12 @@ public class Game extends Thread {
 				if (m_currColor == Card.COLOR_WILD) 
 				{
 					m_currColor = m_currPlayer.chooseColor();
+					
+					if (m_stopping)
+					{
+						return false;
+					}
+					
 					String msg = String.format(getString (R.string.msg_color_chosen), seatToString(m_currPlayer.getSeat()), colorToString(m_currColor));
 					redrawTable ();
 					Log.d("HDU", msg);
@@ -861,6 +945,10 @@ public class Game extends Thread {
 				}
 
 				handleSpecialCards();
+				if (m_stopping)
+				{
+					return false;
+				}
 
 				// if previous player set us up, and we did not throw something
 				// that would negate the penalty, then we get penalized now
@@ -1175,12 +1263,6 @@ public class Game extends Thread {
 			redrawTable();
 		}
 
-		else 
-		{
-			msg = getString(R.string.msg_tap_draw_pile);
-			promptUser(msg);
-			waitForNextRound ();
-		}
 	}
 
 	public boolean roundIsActive ()
@@ -1199,6 +1281,9 @@ public class Game extends Thread {
 	
 	private void waitForNextRound ()
 	{
+		String msg = getString(R.string.msg_tap_draw_pile);
+		promptUser(msg);
+
 		m_waitingToStartRound = true;
 		while (m_waitingToStartRound)
 		{
@@ -1211,8 +1296,6 @@ public class Game extends Thread {
 				
 			}
 		}
-
-		startRound();
 	}
 	
 	public void drawPileTapped ()
@@ -1816,6 +1899,10 @@ public class Game extends Thread {
 		if (currID == Card.ID_RED_2_GLASNOST) 
 		{
 			m_currPlayer.chooseVictim();
+			if (m_stopping)
+			{
+				return;
+			}
 			int victim = m_currPlayer.getChosenVictim();
 			// we'll set the victim after prompting the user for it
 			m_penalty.setFaceup(m_currCard, m_currPlayer, m_players[victim - 1]);
@@ -1872,6 +1959,10 @@ public class Game extends Thread {
 			if (getActivePlayerCount() > 3) 
 			{
 				m_currPlayer.chooseVictim();
+				if (m_stopping)
+				{
+					return;
+				}
 				int victim = m_currPlayer.getChosenVictim();
 
 				// we'll set the victim after prompting the user for it

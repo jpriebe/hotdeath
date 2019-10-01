@@ -96,13 +96,13 @@ public class GameActivity extends Activity
 	    }
 	    
 	    m_gt = new GameTable(this, m_game, m_go);
-	    m_gt.setId(1);
+	    m_gt.setId(View.generateViewId());
 	    
 	    RelativeLayout l = new RelativeLayout (this);
 	    
 	    m_btnFastForward = new Button (this);
 	    m_btnFastForward.setText(getString(R.string.lbl_fast_forward));
-	    m_btnFastForward.setId(2);
+	    m_btnFastForward.setId(View.generateViewId());
 	    m_btnFastForward.setVisibility(View.INVISIBLE);
 	    m_btnFastForward.setOnClickListener (new View.OnClickListener() {
 			

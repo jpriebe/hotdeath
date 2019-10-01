@@ -16,7 +16,7 @@
     	android:layout_width="fill_parent"
     	android:layout_gravity="center">
     	<LinearLayout 
-	    	android:id="@+id/linearLayout1"
+	    	android:id="@+id/linearLayout2"
 	    	android:orientation="vertical"
 		    android:layout_height="wrap_content"
 	    	android:layout_width="0px"
@@ -35,24 +35,24 @@
 		    	android:scaleType="center" 
 		    	android:background="@null"></ImageButton>
 	   	</LinearLayout>
-		<LinearLayout 
-	    	android:id="@+id/linearLayout1"
+		<LinearLayout
+	    	android:id="@+id/linearLayout3"
 	    	android:orientation="vertical"
 		    android:layout_height="wrap_content"
 	    	android:layout_width="0px"
 	    	android:layout_weight="1"
-	    	android:layout_gravity="center">    	
-		    <ImageButton android:src="@drawable/sel_btn_help" android:id="@+id/btn_help" 
+	    	android:layout_gravity="center">
+		    <ImageButton android:src="@drawable/sel_btn_help" android:id="@+id/btn_help"
 		    	android:layout_width="fill_parent" android:layout_height="wrap_content"
-		    	android:scaleType="center" 
+		    	android:scaleType="center"
 		    	android:background="@null"></ImageButton>
-		    <ImageButton android:src="@drawable/sel_btn_about" android:id="@+id/btn_about" 
+		    <ImageButton android:src="@drawable/sel_btn_about" android:id="@+id/btn_about"
 		    	android:layout_width="fill_parent" android:layout_height="wrap_content"
-		    	android:scaleType="center" 
+		    	android:scaleType="center"
 		    	android:background="@null"></ImageButton>
-		    <ImageButton android:src="@drawable/sel_btn_exit" android:id="@+id/btn_exit" 
+		    <ImageButton android:src="@drawable/sel_btn_exit" android:id="@+id/btn_exit"
 		    	android:layout_width="fill_parent" android:layout_height="wrap_content"
-		    	android:scaleType="center" 
+		    	android:scaleType="center"
 		    	android:background="@null"></ImageButton>
 	   	</LinearLayout>
     </LinearLayout>

@@ -899,6 +899,11 @@ public class Game extends Thread {
 		if (m_currPlayer instanceof HumanPlayer)
 		{
 			promptUser(getString(R.string.msg_your_play), false);
+			showMenuButton(true);
+		}
+		else
+		{
+			showMenuButton(false);
 		}
 		
 		m_currPlayer.startTurn();
@@ -1456,6 +1461,17 @@ public class Game extends Thread {
 			}
 		});
 	}
+
+	private void showMenuButton (final boolean show)
+	{
+		m_ga.runOnUiThread(new Runnable () {
+			public void run ()
+			{
+				m_gt.showMenuButton(show);
+			}
+		});
+	}
+
 
 	public void promptForNumCardsToDeal()
 	{

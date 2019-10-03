@@ -37,7 +37,8 @@ public class GameActivity extends Activity
 	private Dialog m_dlgCardHelp = null;
 	
 	private Button m_btnFastForward = null;
-	
+	private Button m_btnMenu = null;
+
 	private GameTable m_gt;
 	private Game m_game;
 	private GameOptions m_go;
@@ -61,7 +62,11 @@ public class GameActivity extends Activity
 	{
 		return m_btnFastForward;
 	}
-	
+	public Button getBtnMenu ()
+	{
+		return m_btnMenu;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -112,21 +117,62 @@ public class GameActivity extends Activity
 				m_game.setFastForward (true);
 			}
 		});
-	    
-	    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-	    lp.addRule(RelativeLayout.ALIGN_BOTTOM, m_gt.getId());
-	    lp.addRule(RelativeLayout.CENTER_HORIZONTAL, m_gt.getId());
-	    
+
+		m_btnMenu = new Button (this);
+		m_btnMenu.setText(getString(R.string.lbl_menu));
+		m_btnMenu.setId(View.generateViewId());
+		m_btnMenu.setVisibility(View.INVISIBLE);
+		m_btnMenu.setOnClickListener (new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				openOptionsMenu();
+			}
+		});
+
+
 	    l.addView(m_gt);
-	    l.addView(m_btnFastForward, lp);
-	    
-	    setContentView (l);
-	    
+
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		lp.addRule(RelativeLayout.ALIGN_BOTTOM, m_gt.getId());
+		lp.addRule(RelativeLayout.CENTER_HORIZONTAL, m_gt.getId());
+
+		l.addView(m_btnMenu, lp);
+
+		lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		lp.addRule(RelativeLayout.ABOVE, m_btnMenu.getId());
+
+		l.addView(m_btnFastForward, lp);
+
+		setContentView (l);
+
+		m_gt.setBottomMargin(getHeightOfView(m_btnMenu));
+
 	    m_gt.invalidate(); // force view to be laid out before we start the game
 	    m_gt.requestFocus();
 	    
 	    m_gt.startGameWhenReady();
     }
+
+	private int getHeightOfView(View contentview) {
+		contentview.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+		return contentview.getMeasuredHeight();
+	}
+
+	@Override
+	public void openOptionsMenu() {
+		super.invalidateOptionsMenu();
+		super.openOptionsMenu();
+		Configuration config = getResources().getConfiguration();
+		if ((config.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) > Configuration.SCREENLAYOUT_SIZE_LARGE) {
+			int originalScreenLayout = config.screenLayout;
+			config.screenLayout = Configuration.SCREENLAYOUT_SIZE_LARGE;
+			super.openOptionsMenu();
+			config.screenLayout = originalScreenLayout;
+		} else {
+			super.openOptionsMenu();
+		}
+	}
 	
 	@Override
 	protected void onPause ()
@@ -241,19 +287,19 @@ public class GameActivity extends Activity
 		{
 			if (m_game.getCurrPlayerUnderAttack() || m_game.getCurrPlayerDrawn())
 			{
-				menu.getItem(0).setEnabled(false);
-				menu.getItem(1).setEnabled(true);				
+				menu.getItem(0).setVisible(false);
+				menu.getItem(1).setVisible(true);
 			}
 			else
 			{
-				menu.getItem(0).setEnabled(true);
-				menu.getItem(1).setEnabled(false);				
+				menu.getItem(0).setVisible(true);
+				menu.getItem(1).setVisible(false);
 			}
 		}
 		else
 		{
-			menu.getItem(0).setEnabled(false);
-			menu.getItem(1).setEnabled(false);
+			menu.getItem(0).setVisible(false);
+			menu.getItem(1).setVisible(false);
 		}
 		
 		return true;

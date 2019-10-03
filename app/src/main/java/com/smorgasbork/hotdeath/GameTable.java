@@ -51,6 +51,8 @@ public class GameTable extends View
 	private int m_rightMargin = 0;
 	private int m_topMargin = 0;
 	private int m_bottomMargin = 0;
+
+	private int m_bottomMarginExternal = 0;
 	
 	private int m_cardSpacing = 0;
 	private int m_cardSpacingHuman = 0;
@@ -231,13 +233,13 @@ public class GameTable extends View
 		m_leftMargin = m_cardWidth / 4;
 		m_rightMargin = m_cardWidth / 4;
 		m_topMargin = m_cardHeight / 3;
-		m_bottomMargin = m_cardHeight / 3;
+		m_bottomMargin = m_cardHeight / 3 + m_bottomMarginExternal;
 		
 		if (h < 4.5 * m_cardHeight)
 		{
 			// probably landscape on a small device...
 			m_topMargin = m_cardHeight / 4;
-			m_bottomMargin = m_cardHeight / 4;
+			m_bottomMargin = m_cardHeight / 4 + m_bottomMarginExternal;
 			m_ptDrawPile = new Point (w / 2 - 5 * m_cardWidth / 4, h / 2 - m_cardHeight / 2);
 			m_ptDiscardPile = new Point (w / 2 + m_cardWidth / 4, h / 2 - m_cardHeight / 2);
 			m_ptDirColor = new Point (m_ptDiscardPile.x + 2 * m_cardWidth + m_bmpDirColorCCW.getWidth() / 4 - m_bmpPlayerIndicator[0][0].getWidth(), h / 2 - m_bmpDirColorCCW.getWidth() / 2);
@@ -337,6 +339,11 @@ public class GameTable extends View
 			m_game.start ();
 		}
 	}
+
+	public void setBottomMargin (int m) {
+		m_bottomMarginExternal = m;
+	}
+
 	
 	public void startGameWhenReady ()
 	{
@@ -361,7 +368,20 @@ public class GameTable extends View
 			a.getBtnFastForward().setVisibility(View.INVISIBLE);
 		}
 	}
-	
+
+	public void showMenuButton (boolean show)
+	{
+		GameActivity a = (GameActivity)(getContext());
+		if (show)
+		{
+			a.getBtnMenu().setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			a.getBtnMenu().setVisibility(View.INVISIBLE);
+		}
+	}
+
 	private Runnable m_touchAndHoldTask = new Runnable() 
 	{
 		public void run() {

@@ -795,7 +795,7 @@ public class Game extends Thread {
 				return;
 			}
 			
-			if (advanceRound() == false)
+			if (!advanceRound())
 			{
 				break;
 			}
@@ -1151,12 +1151,7 @@ public class Game extends Thread {
 
 			// magic 5 is a defender against the hot death wild card only
 			// (although it can be played on any card)
-			if ((tid == Card.ID_WILD_HD) && (cid == Card.ID_RED_5_MAGIC)) 
-			{
-				return true;
-			}
-
-			return false;
+			return ((tid == Card.ID_WILD_HD) && (cid == Card.ID_RED_5_MAGIC));
 		}
 		
 		m_lastCardCheckedIsDefender = false;
@@ -1176,16 +1171,9 @@ public class Game extends Thread {
 
 		if (cid == Card.ID_YELLOW_0_SHITTER) 
 		{
-			if ((id == Card.ID_RED_0_HD) 
-			   || (id == Card.ID_RED_5_MAGIC)
-			   || (h.getNumCards() == 1))
-			{				
-				return true;
-			}
-			else 
-			{
-				return false;
-			}
+			return ((id == Card.ID_RED_0_HD)
+					|| (id == Card.ID_RED_5_MAGIC)
+					|| (h.getNumCards() == 1));
 		}
 
 		// 69 can be played on 6 or 9; likewise, 6 or 9 can be played on 69
@@ -1213,12 +1201,9 @@ public class Game extends Thread {
 		}
 
 		// cards of same color, wild cards, or cards of equal value
-		if ((c.getColor() == m_currColor) || (c.getColor() == Card.COLOR_WILD)
-				|| (cvalue == value)) {
-			return true;
-		}
-
-		return false;
+		return ((c.getColor() == m_currColor)
+				|| (c.getColor() == Card.COLOR_WILD)
+				|| (cvalue == value));
 	}
 
 
@@ -1272,16 +1257,7 @@ public class Game extends Thread {
 
 	public boolean roundIsActive ()
 	{
-		if (m_waitingToStartRound)
-		{
-			return false;
-		}
-		if (m_gameOver)
-		{
-			return false;
-		}
-		
-		return true;
+		return (m_waitingToStartRound || m_gameOver);
 	}
 	
 	private void waitForNextRound ()
@@ -1685,12 +1661,7 @@ public class Game extends Thread {
 			if (id == Card.ID_YELLOW_0_SHITTER) bastardCount++;
 		}
 
-		if (bastardCount == 4) 
-		{
-			return true;
-		}
-		
-		return false;
+		return (bastardCount == 4);
 	}
 
 

@@ -65,12 +65,7 @@ public class GameOptions {
 	public boolean getFamilyFriendly ()
 	{
 		String s = Prefs.getCheatCode (m_ga);
-		if (s.contains("originalhotdeath"))
-		{
-			return false;
-		}
-		
-		return true;
+		return (s.contains("originalhotdeath"));
 	}
 
 	public boolean getFaceUp() 
@@ -86,12 +81,7 @@ public class GameOptions {
 	public boolean getStandardRules() 
     {
 		String s = Prefs.getCheatCode (m_ga);
-		if (s.contains("standardrules"))
-		{
-			return true;
-		}
-		
-		return false;
+		return (s.contains("standardrules"));
     }
 
 	public boolean getOneDeck() 

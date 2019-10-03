@@ -1784,7 +1784,7 @@ public class GameTable extends View
 			}
 
 			String msg;
-			if (m_game.getRoundComplete() == false)
+			if (!m_game.getRoundComplete())
 			{
 				msg = "" + m_game.getPlayer(i).getTotalScore();
 			}

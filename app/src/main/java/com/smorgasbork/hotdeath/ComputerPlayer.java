@@ -437,7 +437,7 @@ public class ComputerPlayer extends Player
 				continue;
 			}
 			
-			if (p.getActive() == false)
+			if (!p.getActive())
 			{
 				continue;
 			}

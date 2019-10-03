@@ -70,7 +70,7 @@ public class HumanPlayer extends Player
 		m_wantsToDraw = false;
 		
 		m_turnDecision = false;
-		while (m_turnDecision == false)
+		while (!m_turnDecision)
 		{
 			try
 			{
@@ -95,7 +95,7 @@ public class HumanPlayer extends Player
 		m_game.promptForNumCardsToDeal();
 		
 		m_numCardsToDealDecision = false;
-		while (m_numCardsToDealDecision == false)
+		while (!m_numCardsToDealDecision)
 		{
 			try
 			{
@@ -127,7 +127,7 @@ public class HumanPlayer extends Player
 		m_game.promptForColor ();
 
 		m_colorDecision = false;
-		while (m_colorDecision == false)
+		while (!m_colorDecision)
 		{
 			try
 			{
@@ -187,7 +187,7 @@ public class HumanPlayer extends Player
 		m_game.promptForVictim();
 		
 		m_victimDecision = false;
-		while (m_victimDecision == false)
+		while (!m_victimDecision)
 		{
 			try
 			{

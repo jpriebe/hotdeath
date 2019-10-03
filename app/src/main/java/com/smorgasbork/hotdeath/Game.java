@@ -168,6 +168,7 @@ public class Game extends Thread {
 		        try {
 		            m_pauseLock.wait();
 		        } catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
 		        }
 		    }
 		}
@@ -1298,7 +1299,7 @@ public class Game extends Thread {
 			}
 			catch (InterruptedException e)
 			{
-				
+				Thread.currentThread().interrupt();
 			}
 		}
 	}

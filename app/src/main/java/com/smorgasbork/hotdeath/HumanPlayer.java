@@ -78,7 +78,7 @@ public class HumanPlayer extends Player
 			}
 			catch (InterruptedException e)
 			{
-				
+				Thread.currentThread().interrupt();
 			}
 			if (m_game.getStopping())
 			{
@@ -103,7 +103,7 @@ public class HumanPlayer extends Player
 			}
 			catch (InterruptedException e)
 			{
-				
+				Thread.currentThread().interrupt();
 			}
 			if (m_game.getStopping())
 			{
@@ -135,7 +135,7 @@ public class HumanPlayer extends Player
 			}
 			catch (InterruptedException e)
 			{
-				
+				Thread.currentThread().interrupt();
 			}
 			if (m_game.getStopping())
 			{
@@ -195,7 +195,7 @@ public class HumanPlayer extends Player
 			}
 			catch (InterruptedException e)
 			{
-				
+				Thread.currentThread().interrupt();
 			}
 			if (m_game.getStopping())
 			{

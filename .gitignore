@@ -1,0 +1,6 @@
+local.properties
+app/build
+.gradle
+.idea
+gradle/wrapper
+build

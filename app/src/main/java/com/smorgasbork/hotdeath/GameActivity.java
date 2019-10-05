@@ -23,6 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.*;
 import android.widget.Button;
 
+import static com.smorgasbork.hotdeath.R.string.lbl_menu;
+
 public class GameActivity extends Activity 
 {
 	public static final String STARTUP_MODE = "com.smorgasbork.hotdeath.startup_mode";
@@ -104,8 +106,8 @@ public class GameActivity extends Activity
 	    m_gt.setId(View.generateViewId());
 	    
 	    RelativeLayout l = new RelativeLayout (this);
-	    
-	    m_btnFastForward = new Button (this);
+
+		m_btnFastForward = (Button)getLayoutInflater().inflate(R.layout.options_menu_button, null);
 	    m_btnFastForward.setText(getString(R.string.lbl_fast_forward));
 	    m_btnFastForward.setId(View.generateViewId());
 	    m_btnFastForward.setVisibility(View.INVISIBLE);
@@ -118,8 +120,8 @@ public class GameActivity extends Activity
 			}
 		});
 
-		m_btnMenu = new Button (this);
-		m_btnMenu.setText(getString(R.string.lbl_menu));
+		m_btnMenu = (Button)getLayoutInflater().inflate(R.layout.options_menu_button, null);
+		m_btnMenu.setText(getString(lbl_menu));
 		m_btnMenu.setId(View.generateViewId());
 		m_btnMenu.setVisibility(View.INVISIBLE);
 		m_btnMenu.setOnClickListener (new View.OnClickListener() {
@@ -130,23 +132,33 @@ public class GameActivity extends Activity
 			}
 		});
 
+		final float scale = m_gt.getContext().getResources().getDisplayMetrics().density;
+		int btn_width = (int) (160 * scale + 0.5f);
+		int btn_height = (int) (42 * scale + 0.5f);
 
 	    l.addView(m_gt);
 
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.ALIGN_BOTTOM, m_gt.getId());
 		lp.addRule(RelativeLayout.CENTER_HORIZONTAL, m_gt.getId());
+		lp.bottomMargin = (int)(8 * scale + 0.5f);
+		lp.width = btn_width;
+		lp.height = btn_height;
 
 		l.addView(m_btnMenu, lp);
 
 		lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.ABOVE, m_btnMenu.getId());
+		lp.addRule(RelativeLayout.CENTER_HORIZONTAL, m_gt.getId());
+		lp.bottomMargin = (int)(8 * scale + 0.5f);
+		lp.width = btn_width;
+		lp.height = btn_height;
 
 		l.addView(m_btnFastForward, lp);
 
 		setContentView (l);
 
-		m_gt.setBottomMargin(getHeightOfView(m_btnMenu));
+		m_gt.setBottomMargin((int)(58 * scale + 0.5f));
 
 	    m_gt.invalidate(); // force view to be laid out before we start the game
 	    m_gt.requestFocus();

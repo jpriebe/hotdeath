@@ -72,10 +72,12 @@ public class CardImageAdapter extends BaseAdapter {
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) 
     {
+
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
+            final float scale = imageView.getContext().getResources().getDisplayMetrics().density;
+            imageView.setLayoutParams(new GridView.LayoutParams((int)(85 * scale + 0.5f), (int)(85 * scale + 0.5f)));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(8, 8, 8, 8);
         } else {

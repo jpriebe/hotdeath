@@ -53,13 +53,13 @@ android {
         minSdkVersion 17
 
         // Specifies the API level used to test the app.
-        targetSdkVersion 27
+        targetSdkVersion 28
 
         // Defines the version number of your app.
-        versionCode 1
+        versionCode 11
 
         // Defines a user-friendly version name for your app.
-        versionName "1.0.8"
+        versionName "1.0.11"
     }
 
     /**

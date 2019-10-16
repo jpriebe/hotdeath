@@ -203,6 +203,8 @@
 	<string name="dlg_help_text">A random player is chosen to deal the first hand, after which each hand is dealt by the player who won the last.  The dealer chooses how many cards to deal, between five and 15.\n\nTo play a card, simply tap it; the "badge" in the lower right-hand corner shows you how many cards are in your hand.  If you cannot see them all, simply drag left or right to view your entire hand.\n\nPlay progresses as in standard UNO, though there are some additional quirks.\n\nWhen a Wild Draw 4, Delayed Blast Wild Draw 4 or Hot Death card is played, the recipient may stack another on top of it, passing the accumulated effects on to the next player.  The stacking ends when the Harvester of Sorrows is played (draw cards cannot be stacked on top of the Harvester) or when a player cannot continue the stacking.  Draw 2s (including Spreaders) and Mystery Draw can never be stacked.\n\nPlay is to 1,000.\n\nFor more specifics about any card, tap and hold the card.  Or use the menu and select "Card Info" to learn about any card in the deck.</string>
 	
 	<string name="lbl_fast_forward">FAST FORWARD</string>
-	<string name="lbl_menu">OPTIONS</string>
+	<string name="lbl_menu_draw">DRAW</string>
+	<string name="lbl_menu_pass">PASS</string>
+	<string name="lbl_menu_help">HELP</string>
 </resources>
 

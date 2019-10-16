@@ -374,11 +374,11 @@ public class GameTable extends View
 		GameActivity a = (GameActivity)(getContext());
 		if (show)
 		{
-			a.getBtnMenu().setVisibility(View.VISIBLE);
+			a.showMenuButtons();
 		}
 		else
 		{
-			a.getBtnMenu().setVisibility(View.INVISIBLE);
+			a.hideMenuButtons();
 		}
 	}
 

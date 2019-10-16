@@ -4,6 +4,7 @@ package com.smorgasbork.hotdeath;
 import android.app.Activity;
 import org.json.*;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -23,8 +24,6 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.*;
 import android.widget.Button;
 
-import static com.smorgasbork.hotdeath.R.string.lbl_menu;
-
 public class GameActivity extends Activity 
 {
 	public static final String STARTUP_MODE = "com.smorgasbork.hotdeath.startup_mode";
@@ -37,9 +36,13 @@ public class GameActivity extends Activity
 	
 	private Dialog m_dlgCardCatalog = null;
 	private Dialog m_dlgCardHelp = null;
-	
+
+	private View m_vMenuPanel = null;
+
 	private Button m_btnFastForward = null;
-	private Button m_btnMenu = null;
+	private Button m_btnMenuDraw = null;
+	private Button m_btnMenuPass = null;
+	private Button m_btnMenuHelp = null;
 
 	private GameTable m_gt;
 	private Game m_game;
@@ -63,10 +66,6 @@ public class GameActivity extends Activity
 	public Button getBtnFastForward ()
 	{
 		return m_btnFastForward;
-	}
-	public Button getBtnMenu ()
-	{
-		return m_btnMenu;
 	}
 
 	@Override
@@ -120,17 +119,8 @@ public class GameActivity extends Activity
 			}
 		});
 
-		m_btnMenu = (Button)getLayoutInflater().inflate(R.layout.options_menu_button, null);
-		m_btnMenu.setText(getString(lbl_menu));
-		m_btnMenu.setId(View.generateViewId());
-		m_btnMenu.setVisibility(View.INVISIBLE);
-		m_btnMenu.setOnClickListener (new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				openOptionsMenu();
-			}
-		});
+		m_vMenuPanel = getLayoutInflater().inflate(R.layout.options_menu, null);
+		m_vMenuPanel.setVisibility(View.INVISIBLE);
 
 		final float scale = m_gt.getContext().getResources().getDisplayMetrics().density;
 		int btn_width = (int) (160 * scale + 0.5f);
@@ -138,17 +128,19 @@ public class GameActivity extends Activity
 
 	    l.addView(m_gt);
 
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams lp;
+
+		lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.ALIGN_BOTTOM, m_gt.getId());
 		lp.addRule(RelativeLayout.CENTER_HORIZONTAL, m_gt.getId());
 		lp.bottomMargin = (int)(8 * scale + 0.5f);
-		lp.width = btn_width;
+		//lp.width = btn_width;
 		lp.height = btn_height;
 
-		l.addView(m_btnMenu, lp);
+		l.addView(m_vMenuPanel, lp);
 
 		lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		lp.addRule(RelativeLayout.ABOVE, m_btnMenu.getId());
+		lp.addRule(RelativeLayout.ABOVE, m_vMenuPanel.getId());
 		lp.addRule(RelativeLayout.CENTER_HORIZONTAL, m_gt.getId());
 		lp.bottomMargin = (int)(8 * scale + 0.5f);
 		lp.width = btn_width;
@@ -158,6 +150,35 @@ public class GameActivity extends Activity
 
 		setContentView (l);
 
+
+		m_btnMenuDraw = findViewById(R.id.btn_menu_draw);
+		m_btnMenuPass = findViewById(R.id.btn_menu_pass);
+		m_btnMenuHelp = findViewById(R.id.btn_menu_help);
+
+		m_btnMenuDraw.setOnClickListener (new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				m_game.drawPileTapped();
+				showMenuButtons();
+			}
+		});
+		m_btnMenuPass.setOnClickListener (new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				m_game.humanPlayerPass();
+				showMenuButtons();
+			}
+		});
+		m_btnMenuHelp.setOnClickListener (new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				showCardCatalog();
+			}
+		});
+
 		m_gt.setBottomMargin((int)(58 * scale + 0.5f));
 
 	    m_gt.invalidate(); // force view to be laid out before we start the game
@@ -166,10 +187,6 @@ public class GameActivity extends Activity
 	    m_gt.startGameWhenReady();
     }
 
-	private int getHeightOfView(View contentview) {
-		contentview.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-		return contentview.getMeasuredHeight();
-	}
 
 	@Override
 	public void openOptionsMenu() {
@@ -290,6 +307,44 @@ public class GameActivity extends Activity
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate (R.menu.gameplay_menu, menu);
 		return true;
+	}
+
+	public void showMenuButtons ()
+	{
+		if (m_game.getCurrPlayer() instanceof HumanPlayer)
+		{
+			if (m_game.getCurrPlayerUnderAttack() || m_game.getCurrPlayerDrawn())
+			{
+				m_btnMenuDraw.setEnabled(false);
+				//m_btnMenuDraw.setAlpha(0.6f);
+				m_btnMenuDraw.setTextColor(0xff7f7f7f);
+				m_btnMenuPass.setEnabled(true);
+				//m_btnMenuPass.setAlpha(1.0f);
+				m_btnMenuPass.setTextColor(0xffffffff);
+			}
+			else
+			{
+				m_btnMenuDraw.setEnabled(true);
+				//m_btnMenuDraw.setAlpha(1.0f);
+				m_btnMenuDraw.setTextColor(0xffffffff);
+				m_btnMenuPass.setEnabled(false);
+				//m_btnMenuPass.setAlpha(0.6f);
+				m_btnMenuPass.setTextColor(0xff7f7f7f);
+			}
+		}
+		else
+		{
+			m_btnMenuDraw.setEnabled(false);
+			m_btnMenuPass.setEnabled(false);
+		}
+
+
+		m_vMenuPanel.setVisibility(View.VISIBLE);
+	}
+
+	public void hideMenuButtons ()
+	{
+		m_vMenuPanel.setVisibility(View.INVISIBLE);
 	}
 	
 	@Override

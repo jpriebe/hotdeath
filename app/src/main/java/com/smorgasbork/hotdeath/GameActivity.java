@@ -4,7 +4,6 @@ package com.smorgasbork.hotdeath;
 import android.app.Activity;
 import org.json.*;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.smorgasbork.hotdeath.R;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.*;
 import android.widget.Button;
@@ -106,7 +104,7 @@ public class GameActivity extends Activity
 	    
 	    RelativeLayout l = new RelativeLayout (this);
 
-		m_btnFastForward = (Button)getLayoutInflater().inflate(R.layout.options_menu_button, null);
+		m_btnFastForward = (Button)getLayoutInflater().inflate(R.layout.action_button, null);
 	    m_btnFastForward.setText(getString(R.string.lbl_fast_forward));
 	    m_btnFastForward.setId(View.generateViewId());
 	    m_btnFastForward.setVisibility(View.INVISIBLE);
@@ -120,6 +118,7 @@ public class GameActivity extends Activity
 		});
 
 		m_vMenuPanel = getLayoutInflater().inflate(R.layout.options_menu, null);
+		m_vMenuPanel.setId(View.generateViewId());
 		m_vMenuPanel.setVisibility(View.INVISIBLE);
 
 		final float scale = m_gt.getContext().getResources().getDisplayMetrics().density;
@@ -299,15 +298,7 @@ public class GameActivity extends Activity
     	
     	m_dlgCardCatalog.show();
     }
-		
-	@Override
-	public boolean onCreateOptionsMenu (Menu menu)
-	{
-		super.onCreateOptionsMenu(menu);
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate (R.menu.gameplay_menu, menu);
-		return true;
-	}
+
 
 	public void showMenuButtons ()
 	{
@@ -316,19 +307,15 @@ public class GameActivity extends Activity
 			if (m_game.getCurrPlayerUnderAttack() || m_game.getCurrPlayerDrawn())
 			{
 				m_btnMenuDraw.setEnabled(false);
-				//m_btnMenuDraw.setAlpha(0.6f);
 				m_btnMenuDraw.setTextColor(0xff7f7f7f);
 				m_btnMenuPass.setEnabled(true);
-				//m_btnMenuPass.setAlpha(1.0f);
 				m_btnMenuPass.setTextColor(0xffffffff);
 			}
 			else
 			{
 				m_btnMenuDraw.setEnabled(true);
-				//m_btnMenuDraw.setAlpha(1.0f);
 				m_btnMenuDraw.setTextColor(0xffffffff);
 				m_btnMenuPass.setEnabled(false);
-				//m_btnMenuPass.setAlpha(0.6f);
 				m_btnMenuPass.setTextColor(0xff7f7f7f);
 			}
 		}
@@ -346,49 +333,5 @@ public class GameActivity extends Activity
 	{
 		m_vMenuPanel.setVisibility(View.INVISIBLE);
 	}
-	
-	@Override
-	public boolean onPrepareOptionsMenu (Menu menu)
-	{
-		if (m_game.getCurrPlayer() instanceof HumanPlayer)
-		{
-			if (m_game.getCurrPlayerUnderAttack() || m_game.getCurrPlayerDrawn())
-			{
-				menu.getItem(0).setVisible(false);
-				menu.getItem(1).setVisible(true);
-			}
-			else
-			{
-				menu.getItem(0).setVisible(true);
-				menu.getItem(1).setVisible(false);
-			}
-		}
-		else
-		{
-			menu.getItem(0).setVisible(false);
-			menu.getItem(1).setVisible(false);
-		}
-		
-		return true;
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected (MenuItem item)
-	{
-		switch (item.getItemId())
-		{
-		case R.id.menu_item_draw:
-			m_game.drawPileTapped();
-			return true;
-		case R.id.menu_item_pass:
-			m_game.humanPlayerPass();
-			return true;
-		case R.id.menu_item_card_info:
-			//showDialog(DIALOG_CARD_CATALOG);
-			showCardCatalog();
-			return true;
-		}
-		
-		return false;
-	}
+
 }
